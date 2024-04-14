@@ -1,85 +1,111 @@
-Litecoin Core integration/staging tree
-=====================================
+Bitrae integration/staging tree
+================================
 
-[![Build Status](https://travis-ci.org/litecoin-project/litecoin.svg?branch=master)](https://travis-ci.org/litecoin-project/litecoin)
+https://bitrae.net
 
-https://litecoin.org
+# Copyright Notice
 
-What is Litecoin?
-----------------
+This project incorporates work from various developers and projects, with copyrights held as follows:
 
-Litecoin is an experimental digital currency that enables instant payments to
-anyone, anywhere in the world. Litecoin uses peer-to-peer technology to operate
-with no central authority: managing transactions and issuing money are carried
-out collectively by the network. Litecoin Core is the name of open source
-software which enables the use of this currency.
+- © 2009-2014 Bitcoin Developers. All rights reserved.
+- © 2011-2014 Litecoin Developers. All rights reserved.
+- © 2024 Bitrae Developers. All rights reserved.
 
-For more information, as well as an immediately useable, binary version of
-the Litecoin Core software, see [https://litecoin.org](https://litecoin.org).
+The use of this software is subject to the terms and conditions as defined by the respective licenses of these projects.
+
+
+
+# Bitrae: A New Era in Cryptocurrency Mining
+
+Welcome to the official documentation for Bitrae, the cryptocurrency designed by miners, for the mining community. Bitrae stands out as a pioneering lightweight version of Bitcoin, crafted to address the needs and preferences of today’s miners. With no pre-mine, Bitrae ensures a level playing field, underscoring our commitment to fairness and decentralization.
+
+## Key Features of Bitrae
+
+- **Scrypt Proof-of-Work Algorithm**: Bitrae adopts the scrypt algorithm for its proof-of-work mechanism, a deliberate choice aimed at ensuring greater mining accessibility. This algorithm is designed to be more memory-intensive, mitigating the dominance of ASIC mining and fostering a more decentralized mining environment.
+
+- **Fast Transaction Confirmations**: With a block target time of 37.5 seconds, Bitrae significantly reduces transaction confirmation times. This enhancement not only improves usability for transactions but also contributes to the network’s capacity to handle more transactions efficiently.
+
+- **Economic Model and Coin Supply**:
+  - **Subsidy Halving**: True to the principles of creating a sustainable and deflationary economic model, Bitrae’s mining subsidy halves approximately every 3.36 million blocks, or roughly every four years.
+  - **Total Coin Supply**: The total supply of Bitrae coins is capped at approximately 336 million, a decision that strikes a balance between scarcity and accessibility, influencing the long-term value of Bitrae.
+
+- **Mining Rewards and Difficulty Adjustment**:
+  - **Reward per Block**: Miners are initially rewarded with 50 Bitrae coins per block, a testament to our commitment to rewarding the mining community's efforts.
+  - **Difficulty Retarget**: The network adjusts its difficulty every 2304 blocks, ensuring consistent block times and network stability, even as mining power fluctuates.
+
+## Community-Driven Development
+
+Bitrae is a testament to the power of community-driven development. Created with no pre-mine, every Bitrae coin in circulation is the result of the hard work and dedication of our miners. This approach guarantees a fair start and equitable opportunity for all participants, reinforcing our vision of a decentralized and accessible cryptocurrency.
+
+## Getting Started with Bitrae
+
+To join the Bitrae network and start mining or transacting, we provide an immediately usable, binary version of the Bitrae client software. Our software is designed with user accessibility in mind, ensuring a seamless experience for newcomers and experienced users alike.
+
+For more information and to download the client software, please visit https://bitrae.net
+
+---
+
+Bitrae is more than just a cryptocurrency; it’s a movement. By focusing on the needs and values of the mining community, we aim to foster a new era of cryptocurrency that is inclusive, fair, and sustainable. Join us in shaping the future of cryptocurrency mining.
+ 
+
 
 License
 -------
 
-Litecoin Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
-information or see https://opensource.org/licenses/MIT.
+Bitrae is released under the terms of the MIT license. See `COPYING` for more
+information or see https://opensource.org/licenses/MIT
 
-Development Process
--------------------
-
-The `master` branch is regularly built (see `doc/build-*.md` for instructions) and tested, but it is not guaranteed to be
-completely stable. [Tags](https://github.com/litecoin-project/litecoin/tags) are created
-regularly from release branches to indicate new official, stable release versions of Litecoin Core.
-
-The https://github.com/litecoin-project/gui repository is used exclusively for the
-development of the GUI. Its master branch is identical in all monotree
-repositories. Release branches and tags do not exist, so please do not fork
-that repository unless it is for development reasons.
-
-The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md)
-and useful hints for developers can be found in [doc/developer-notes.md](doc/developer-notes.md).
-
-The developer [mailing list](https://groups.google.com/forum/#!forum/litecoin-dev)
-should be used to discuss complicated or controversial changes before working
-on a patch set.
-
-Developer IRC can be found on Freenode at #litecoin-dev.
-
-Testing
+## Development Workflow
 -------
+### Overview
 
-Testing and code review is the bottleneck for development; we get more pull
-requests than we can review and test on short notice. Please be patient and help out by testing
-other people's pull requests, and remember this is a security-critical project where any mistake might cost people
-lots of money.
+Our development process encourages collaboration and innovation. Developers initiate their work in personal branches, progressing to pull requests when they believe their enhancements or fixes are prepared for integration.
+
+### Pull Requests and Review Process
+
+- **Straightforward Changes**: For minor, clear-cut modifications, a member of the Bitrae development team will merge the changes directly.
+  
+- **Complex or Debatable Changes**: Proposals that introduce complexity or might stir debate require the contributor to engage with both the development team and the wider community. This step ensures that all perspectives are considered, fostering a collaborative decision-making process.
+
+- **Consensus and Contribution**: Acceptance of changes hinges on a consensus within the community that the contribution is beneficial. Contributors should be prepared to refine their submissions in response to feedback, ensuring alignment with the project’s coding standards (refer to `doc/coding.txt` for guidelines) and the overarching vision.
+
+### Stability and Releases
+
+- **Main Branch**: The `main` branch undergoes regular builds and tests to ensure ongoing quality and functionality. However, complete stability of this branch is not assured.
+  
+- **Stable Releases**: For stable and official releases of Bitrae, we use [tags](https://github.com/bitrae-project/bitrae/tags) to mark these milestones. These tagged versions represent the culmination of collaborative efforts toward enhancing and refining Bitrae.
+
+This workflow underscores our commitment to open, inclusive development, ensuring that Bitrae evolves in ways that serve our community's needs and aspirations.
+
+
+
+## Quality Assurance and Contribution Process
+
+### Testing and Code Review: Critical Pathways for Development
+
+In the realm of development, testing and code review represent our most significant checkpoints. The volume of pull requests frequently exceeds our capacity for review and thorough testing. We request your understanding and patience during this process.
+
+### Collaboration and Vigilance
+
+As a project with critical implications for security, every contribution carries the weight of potential financial impact. Missteps, however minor, can lead to substantial monetary losses for users. We, therefore, emphasize the importance of meticulousness in our development efforts.
+
+### Engage and Support
+
+Your participation and support are invaluable to us. Engaging in testing, contributing to code reviews, or simply offering insights can greatly accelerate the development process. Together, we can maintain the high standards of security and reliability that our community expects.
+
+We are deeply grateful for your contributions and patience, reminding ourselves of the profound responsibility we share in this security-sensitive endeavor.
 
 ### Automated Testing
 
-Developers are strongly encouraged to write [unit tests](src/test/README.md) for new code, and to
-submit new unit tests for old code. Unit tests can be compiled and run
-(assuming they weren't disabled in configure) with: `make check`. Further details on running
-and extending unit tests can be found in [/src/test/README.md](/src/test/README.md).
+We highly encourage developers to incorporate unit testing as a fundamental part of the development process. This includes writing new unit tests for freshly developed code as well as enhancing existing code with additional unit tests.
 
-There are also [regression and integration tests](/test), written
-in Python, that are run automatically on the build server.
-These tests can be run (if the [test dependencies](/test) are installed) with: `test/functional/test_runner.py`
+For unit testing of the core code, refer to `src/test/`. To compile and run them:
 
-The Travis CI system makes sure that every pull request is built for Windows, Linux, and macOS, and that unit/sanity tests are run automatically.
+    cd src; make -f makefile.unix test
 
-### Manual Quality Assurance (QA) Testing
+Unit tests for the GUI code are in `src/qt/test/`. To compile and run them:
 
-Changes should be tested by somebody other than the developer who wrote the
-code. This is especially important for large or high-risk changes. It is useful
-to add a test plan to the pull request description if testing the changes is
-not straightforward.
+    qmake BITCOIN_QT_TEST=1 -o Makefile.test bitcoin-qt.pro
+    make -f Makefile.test
+    ./bitrae-qt_test
 
-Translations
-------------
-
-We only accept translation fixes that are submitted through [Bitcoin Core's Transifex page](https://www.transifex.com/projects/p/bitcoin/).
-Translations are converted to Litecoin periodically.
-
-Translations are periodically pulled from Transifex and merged into the git repository. See the
-[translation process](doc/translation_process.md) for details on how this works.
-
-**Important**: We do not accept translation changes as GitHub pull requests because the next
-pull from Transifex would automatically overwrite them again.
