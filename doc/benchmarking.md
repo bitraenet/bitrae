@@ -1,21 +1,21 @@
 Benchmarking
 ============
 
-Litecoin Core has an internal benchmarking framework, with benchmarks
+Bitrae Core has an internal benchmarking framework, with benchmarks
 for cryptographic algorithms (e.g. SHA1, SHA256, SHA512, RIPEMD160, Poly1305, ChaCha20), rolling bloom filter, coins selection,
 thread queue, wallet balance.
 
 Running
 ---------------------
 
-For benchmarks purposes you only need to compile `litecoin_bench`. Beware of configuring without `--enable-debug` as this would impact
+For benchmarks purposes you only need to compile `bitrae_bench`. Beware of configuring without `--enable-debug` as this would impact
 benchmarking by unlatching log printers and lock analysis.
 
-    make -C src litecoin_bench
+    make -C src bitrae_bench
 
-After compiling litecoin-core, the benchmarks can be run with:
+After compiling bitrae-core, the benchmarks can be run with:
 
-    src/bench/bench_litecoin
+    src/bench/bench_bitrae
 
 The output will look similar to:
 ```
@@ -29,7 +29,7 @@ The output will look similar to:
 Help
 ---------------------
 
-    src/bench/bench_litcoin --help
+    src/bench/bench_bitrae --help
 
 To print options like scaling factor or per-benchmark filter.
 
@@ -45,6 +45,6 @@ More benchmarks are needed for, in no particular order:
 Going Further
 --------------------
 
-To monitor Litecoin Core performance more in depth (like reindex or IBD): https://github.com/chaincodelabs/bitcoinperf
+To monitor Bitrae Core performance more in depth (like reindex or IBD): https://github.com/chaincodelabs/bitcoinperf
 
-To generate Flame Graphs for Litecoin Core: https://github.com/eklitzke/bitcoin/blob/flamegraphs/doc/flamegraphs.md
+To generate Flame Graphs for Bitrae Core: https://github.com/eklitzke/bitcoin/blob/flamegraphs/doc/flamegraphs.md

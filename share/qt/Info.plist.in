@@ -29,16 +29,16 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>Litecoin-Qt</string>
+  <string>Bitrae-Qt</string>
 
   <key>CFBundleName</key>
-  <string>Litecoin-Qt</string>
+  <string>Bitrae-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>
 
   <key>CFBundleIdentifier</key>
-  <string>org.litecoin.Litecoin-Qt</string>
+  <string>org.bitrae.Bitrae-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -46,10 +46,10 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>org.litecoin.LitecoinPayment</string>
+      <string>org.bitrae.BitraePayment</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>litecoin</string>
+        <string>bitrae</string>
       </array>
     </dict>
   </array>

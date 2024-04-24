@@ -8,7 +8,7 @@ https://bitrae.net
 This project incorporates work from various developers and projects, with copyrights held as follows:
 
 - © 2009-2014 Bitcoin Developers. All rights reserved.
-- © 2011-2014 Litecoin Developers. All rights reserved.
+- © 2011-2014 Bitrae Developers. All rights reserved.
 - © 2024 Bitrae Developers. All rights reserved.
 
 The use of this software is subject to the terms and conditions as defined by the respective licenses of these projects.
@@ -73,7 +73,7 @@ Our development process encourages collaboration and innovation. Developers init
 
 - **Main Branch**: The `main` branch undergoes regular builds and tests to ensure ongoing quality and functionality. However, complete stability of this branch is not assured.
   
-- **Stable Releases**: For stable and official releases of Bitrae, we use [tags](https://github.com/bitrae-project/bitrae/tags) to mark these milestones. These tagged versions represent the culmination of collaborative efforts toward enhancing and refining Bitrae.
+- **Stable Releases**: For stable and official releases of Bitrae, we use [tags](https://github.com/bitraenet/bitrae/tags) to mark these milestones. These tagged versions represent the culmination of collaborative efforts toward enhancing and refining Bitrae.
 
 This workflow underscores our commitment to open, inclusive development, ensuring that Bitrae evolves in ways that serve our community's needs and aspirations.
 

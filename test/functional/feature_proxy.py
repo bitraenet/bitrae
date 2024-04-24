@@ -2,13 +2,13 @@
 # Copyright (c) 2015-2019 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Test litecoind with different proxy configuration.
+"""Test bitraed with different proxy configuration.
 
 Test plan:
-- Start litecoind's with different proxy configurations
+- Start bitraed's with different proxy configurations
 - Use addnode to initiate connections
 - Verify that proxies are connected to, and the right connection command is given
-- Proxy configurations to test on litecoind side:
+- Proxy configurations to test on bitraed side:
     - `-proxy` (proxy everything)
     - `-onion` (proxy just onions)
     - `-proxyrandomize` Circuit randomization
@@ -126,7 +126,7 @@ class ProxyTest(BitcoinTestFramework):
         self.network_test(node, addr, network=NET_IPV4)
 
         if self.have_ipv6:
-            addr = "[1233:3432:2434:2343:3234:2345:6546:4534]:5443"
+            addr = "[1233:3432:2434:2343:3234:2345:6546:4534]:8443"
             self.log.debug("Test: outgoing IPv6 connection through node for address {}".format(addr))
             node.addnode(addr, "onetry")
             cmd = proxies[1].queue.get()
@@ -134,7 +134,7 @@ class ProxyTest(BitcoinTestFramework):
             # Note: bitcoind's SOCKS5 implementation only sends atyp DOMAINNAME, even if connecting directly to IPv4/IPv6
             assert_equal(cmd.atyp, AddressType.DOMAINNAME)
             assert_equal(cmd.addr, b"1233:3432:2434:2343:3234:2345:6546:4534")
-            assert_equal(cmd.port, 5443)
+            assert_equal(cmd.port, 8443)
             if not auth:
                 assert_equal(cmd.username, None)
                 assert_equal(cmd.password, None)
