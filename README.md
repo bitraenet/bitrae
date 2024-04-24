@@ -8,7 +8,7 @@ https://bitrae.net
 This project incorporates work from various developers and projects, with copyrights held as follows:
 
 - © 2009-2014 Bitcoin Developers. All rights reserved.
-- © 2011-2014 Bitrae Developers. All rights reserved.
+- © 2011-2014 Litecoin Developers. All rights reserved.
 - © 2024 Bitrae Developers. All rights reserved.
 
 The use of this software is subject to the terms and conditions as defined by the respective licenses of these projects.
