@@ -135,8 +135,8 @@ public:
         // service bits we want, but we should get them updated to support all service bits wanted by any
         // release ASAP to avoid it where possible.
         vSeeds.emplace_back("dnsseed.bitraetools.com");
-        //vSeeds.emplace_back("dnsseed.bitraepool.com");
-        //vSeeds.emplace_back("dnsseed.bitraeseed.co.uk");
+        vSeeds.emplace_back("dnsseed.bitraepool.com");
+        vSeeds.emplace_back("dnsseed.bitraeseed.co.uk");
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,25);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);
@@ -212,10 +212,10 @@ public:
         consensus.nMinimumChainWork = uint256S("0x00");
         consensus.defaultAssumeValid = uint256S("0x00"); // 0
 
-        pchMessageStart[0] = 0xef;
-        pchMessageStart[1] = 0xd5;
-        pchMessageStart[2] = 0xab;
-        pchMessageStart[3] = 0xcd;
+        pchMessageStart[0] = 0xa3;
+        pchMessageStart[1] = 0xea;
+        pchMessageStart[2] = 0xbe;
+        pchMessageStart[3] = 0xd9;
         nDefaultPort = 16333;
         nPruneAfterHeight = 4000;
         m_assumed_blockchain_size = 4;
@@ -307,10 +307,10 @@ public:
         consensus.nMinimumChainWork = uint256{};
         consensus.defaultAssumeValid = uint256{};
 
-        pchMessageStart[0] = 0xee;
-        pchMessageStart[1] = 0xd2;
-        pchMessageStart[2] = 0xaa;
-        pchMessageStart[3] = 0xcc;
+        pchMessageStart[0] = 0xae;
+        pchMessageStart[1] = 0xd0;
+        pchMessageStart[2] = 0xfa;
+        pchMessageStart[3] = 0xcf;
         nDefaultPort = 16444;
         nPruneAfterHeight = 4000;
         m_assumed_blockchain_size = 0;
