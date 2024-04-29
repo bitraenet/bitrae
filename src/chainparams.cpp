@@ -230,8 +230,8 @@ public:
         vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
         vSeeds.emplace_back("testnet-seed.bitraetools.com");
-        //vSeeds.emplace_back("seed-b.bitraepool.com");
-        //vSeeds.emplace_back("dnsseed-testnet.bitraeseed.co.uk");
+        vSeeds.emplace_back("seed-b.bitraepool.com");
+        vSeeds.emplace_back("dnsseed-testnet.bitraeseed.co.uk");
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,85);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,196);
