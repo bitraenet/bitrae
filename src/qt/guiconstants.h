@@ -45,7 +45,7 @@ static const int TOOLTIP_WRAP_THRESHOLD = 80;
 #define QAPP_ORG_NAME "Bitrae"
 #define QAPP_ORG_DOMAIN "bitrae.net"
 #define QAPP_APP_NAME_DEFAULT "Bitrae-Qt"
-#define QAPP_APP_NAME_TESTNET "Liteocin-Qt-testnet"
+#define QAPP_APP_NAME_TESTNET "Bitrae-Qt-testnet"
 #define QAPP_APP_NAME_SIGNET "Bitrae-Qt-signet"
 #define QAPP_APP_NAME_REGTEST "Bitrae-Qt-regtest"
 
