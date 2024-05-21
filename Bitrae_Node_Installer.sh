@@ -1,7 +1,7 @@
 #!/bin/bash
 
 LOGFILE="$HOME/bitrae_install.log"  # Changed to use $HOME
-REPO_URL="https://github.com/bitraenet/bitrae"
+REPO_URL="https://github.com/bitraenet/bitrae.git"
 INSTALL_DIR="$HOME/bitrae"  # Install in the user's home directory
 
 # Function to print in color
