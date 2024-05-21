@@ -1,9 +1,9 @@
-Bitrae integration/staging tree
+# Bitrae integration/staging tree
 ================================
 
 https://bitrae.net
 
-# Copyright Notice
+## Copyright Notice
 
 This project incorporates work from various developers and projects, with copyrights held as follows:
 
@@ -12,8 +12,6 @@ This project incorporates work from various developers and projects, with copyri
 - © 2024 Bitrae Developers. All rights reserved.
 
 The use of this software is subject to the terms and conditions as defined by the respective licenses of these projects.
-
-
 
 # Bitrae: A New Era in Cryptocurrency Mining
 
@@ -39,24 +37,32 @@ Bitrae is a testament to the power of community-driven development. Created with
 
 ## Getting Started with Bitrae
 
-To join the Bitrae network and start mining or transacting, we provide an immediately usable, binary version of the Bitrae client software. Our software is designed with user accessibility in mind, ensuring a seamless experience for newcomers and experienced users alike.
+### Installing a Full Node
+
+To set up a full node and join the Bitrae network, please use the `Bitrae_Node_Installer.sh` script available in our repository. This script simplifies the installation process, especially for users without prior experience, and is configured to install the node with non-GUI options by default.
+
+**Installation Steps:**
+
+1. Download the `Bitrae_Node_Installer.sh` script from our repository.
+2. Run the script with the command: `bash Bitrae_Node_Installer.sh`
+3. Follow the on-screen instructions to complete the installation.
+
+**Note**: By default, the script installs the node without a GUI. If you prefer a GUI version, you need to edit line 80 of the script. Remove the `--without-gui` flag from this line:
+
+```
+./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --without-gui
+```
+
+Feel free to modify other options in the script according to your preferences.
 
 For more information and to download the client software, please visit https://bitrae.net
 
----
+## License
 
-Bitrae is more than just a cryptocurrency; it’s a movement. By focusing on the needs and values of the mining community, we aim to foster a new era of cryptocurrency that is inclusive, fair, and sustainable. Join us in shaping the future of cryptocurrency mining.
- 
-
-
-License
--------
-
-Bitrae is released under the terms of the MIT license. See `COPYING` for more
-information or see https://opensource.org/licenses/MIT
+Bitrae is released under the terms of the MIT license. See `COPYING` for more information or see https://opensource.org/licenses/MIT
 
 ## Development Workflow
--------
+
 ### Overview
 
 Our development process encourages collaboration and innovation. Developers initiate their work in personal branches, progressing to pull requests when they believe their enhancements or fixes are prepared for integration.
@@ -67,17 +73,15 @@ Our development process encourages collaboration and innovation. Developers init
   
 - **Complex or Debatable Changes**: Proposals that introduce complexity or might stir debate require the contributor to engage with both the development team and the wider community. This step ensures that all perspectives are considered, fostering a collaborative decision-making process.
 
-- **Consensus and Contribution**: Acceptance of changes hinges on a consensus within the community that the contribution is beneficial. Contributors should be prepared to refine their submissions in response to feedback, ensuring alignment with the project’s coding standards (refer to `doc/coding.txt` for guidelines) and the overarching vision.
+- **Consensus and Contribution**: Acceptance of changes
+
+ hinges on a consensus within the community that the contribution is beneficial. Contributors should be prepared to refine their submissions in response to feedback, ensuring alignment with the project’s coding standards (refer to `doc/coding.txt` for guidelines) and the overarching vision.
 
 ### Stability and Releases
 
 - **Main Branch**: The `main` branch undergoes regular builds and tests to ensure ongoing quality and functionality. However, complete stability of this branch is not assured.
   
 - **Stable Releases**: For stable and official releases of Bitrae, we use [tags](https://github.com/bitraenet/bitrae/tags) to mark these milestones. These tagged versions represent the culmination of collaborative efforts toward enhancing and refining Bitrae.
-
-This workflow underscores our commitment to open, inclusive development, ensuring that Bitrae evolves in ways that serve our community's needs and aspirations.
-
-
 
 ## Quality Assurance and Contribution Process
 
@@ -109,3 +113,4 @@ Unit tests for the GUI code are in `src/qt/test/`. To compile and run them:
     make -f Makefile.test
     ./bitrae-qt_test
 
+---
