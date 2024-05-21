@@ -209,7 +209,7 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].nStartHeight = 0; // Deploying MWEB from genesis to enhance privacy and fungibility from the outset.
         consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].nTimeoutHeight = 0; // No timeout, implementing MWEB as a core feature of the network from the beginning.
 
-        consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000000000000001de904ec7"); 7656
+        consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000000000000001de904ec7"); // 7656
         consensus.defaultAssumeValid = uint256S("0x8fd6a020913ffc66e45ef2012289f4c18365793b740a601ad1beac7f6b45c01b"); // 7656
 
         pchMessageStart[0] = 0xa3;
