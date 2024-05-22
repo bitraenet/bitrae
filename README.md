@@ -43,9 +43,17 @@ To set up a full node and join the Bitrae network, please use the `Bitrae_Node_I
 
 **Installation Steps:**
 
-1. Download the `Bitrae_Node_Installer.sh` script from our repository.
-2. Run the script with the command: `bash Bitrae_Node_Installer.sh`
-3. Follow the on-screen instructions to complete the installation.
+1. Download the `Bitrae_Node_Installer.sh` script from our repository with the following command: 
+    wget https://raw.githubusercontent.com/bitraenet/bitrae/main/Bitrae_Node_Installer.sh
+    
+2. Make the script executable with the command:
+    chmod +x Bitrae_Node_Installer.sh
+    
+3. Run the script with the command:
+    bash Bitrae_Node_Installer.sh
+    
+4. Follow the on-screen instructions to complete the installation.
+
 
 **Note**: By default, the script installs the node without a GUI. If you prefer a GUI version, you need to edit line 80 of the script. Remove the `--without-gui` flag from this line:
 
