@@ -59,10 +59,10 @@ To set up a full node and join the Bitrae network, please use the `Bitrae_Node_I
 
 
 
-**Note**: By default, the script installs the node without a GUI. If you prefer a GUI version, you need to edit line 80 of the script. Remove the `--without-gui` flag from this line:
+**Note**: By default, the script installs the node without a GUI. If you prefer a GUI version, you need to edit line 80 of the script. Remove the `--without-gui` flag from this line or copy and paste below:
 
 ```
-./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --without-gui
+./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
 ```
 
 Feel free to modify other options in the script according to your preferences.
