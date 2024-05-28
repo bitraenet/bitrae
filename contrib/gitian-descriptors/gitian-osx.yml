@@ -1,5 +1,5 @@
 ---
-name: "bitrae-core-osx-0.21"
+name: "bitrae-core-osx-0.1.0"
 enable_cache: true
 distro: "ubuntu"
 suites:
