@@ -206,7 +206,7 @@ public:
 
         // Deployment of MWEB (LIP-0002, LIP-0003, and LIP-0004)
         consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].bit = 4;
-        consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].nStartHeight = 0; // Deploying MWEB from genesis to enhance privacy and fungibility from the outset.
+        consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].nStartHeight = 9400; // Deploying MWEB from block 9400 to enhance privacy and fungibility.
         consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].nTimeoutHeight = 0; // No timeout, implementing MWEB as a core feature of the network from the beginning.
 
         consensus.nMinimumChainWork = uint256S("0x00"); // 0
