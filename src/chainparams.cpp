@@ -253,6 +253,14 @@ public:
         checkpointData = {
             {
                 {0, uint256S("0x2a8a85a61f33d3d35bb20f1c7c1a311e4a88605ff563fa4a0be2a0844a9a3245")},
+                {1000, uint256S("0xf039e67e834b080b3a88fc29fe52d75ed5e912d15b29c42e7ee8d20e9c2a3fd2")},
+                {5000, uint256S("0xca95c6eb6c96868cdf2dfa657f054c33c5392ba3294c49f71a50bb01bd8de7a7")},
+                {9400, uint256S("0x6a44ab5768419533d6bda583a6d43ead8e00b3fcf662048ae2e7e752e740f006")},
+                {10000, uint256S("0xaabe1beef307fd82d371349da69ce1fe906df294a8cf812d09a7321a4b2abf88")},
+                {15000, uint256S("0x8b02f355157fb464df24ed2f017f76ba42e2731506b2b0ef1dfafec3dbcbcae0")},
+                {20000, uint256S("0x6b3fb6c280a96657f87c0964fbe57785d14cdad15ab8e3edd4ddcb65c2cea1f7")},
+                {24667, uint256S("0xc332b7640fd6eaf40386b130270bdc61e71e48419f3d0a0a45f91f3820e6f66c")},
+                {25000, uint256S("0x70bd7642ef44936ba83abbf7a6b5caf959a21e356bcd177c3b508c2a08848f7b")},
             }
         };
 
