@@ -51,18 +51,26 @@ jobs:
       run: |
         ./contrib/install_db4.sh $(pwd)
         export BDB_PREFIX=$(pwd)/db4
+        echo "BDB_PREFIX is set to $BDB_PREFIX"
+        ls -la $BDB_PREFIX
+        ls -la $BDB_PREFIX/include
+        ls -la $BDB_PREFIX/lib
 
     - if: matrix.language == 'c-cpp' && matrix.build-mode == 'manual'
       name: Configure Build
       run: |
+        export BDB_PREFIX=$(pwd)/db4
         ./autogen.sh
         ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --without-gui
+        echo "Configuration complete. BDB_LIBS=-L${BDB_PREFIX}/lib -ldb_cxx-4.8, BDB_CFLAGS=-I${BDB_PREFIX}/include"
 
     - if: matrix.language == 'c-cpp' && matrix.build-mode == 'manual'
       name: Build
-      run: make
+      run: |
+        make CXXFLAGS="-I${BDB_PREFIX}/include"
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
+
