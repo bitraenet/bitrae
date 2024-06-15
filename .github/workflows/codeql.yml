@@ -52,9 +52,6 @@ jobs:
         ./contrib/install_db4.sh $(pwd)
         export BDB_PREFIX=$(pwd)/db4
         echo "BDB_PREFIX is set to $BDB_PREFIX"
-        ls -la $BDB_PREFIX
-        ls -la $BDB_PREFIX/include
-        ls -la $BDB_PREFIX/lib
 
     - if: matrix.language == 'c-cpp' && matrix.build-mode == 'manual'
       name: Configure Build
