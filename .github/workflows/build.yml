@@ -66,6 +66,12 @@ jobs:
         source venv/bin/activate
         pip install setuptools ez_setup
 
+    - name: Verify compiler on macOS
+      if: matrix.os == 'macos-latest'
+      run: |
+        g++ --version
+        g++ -xc++ -E -v -
+
     - name: Build Dependencies using the depends system on macOS
       if: matrix.os == 'macos-latest'
       run: |
