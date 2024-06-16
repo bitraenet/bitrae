@@ -67,7 +67,7 @@ jobs:
       if: matrix.os == 'macos-latest'
       run: |
         cd depends
-        make HOST=arm64-apple-darwin
+        make HOST=x86_64-apple-darwin
         cd ..
 
     - name: Build Dependencies using the depends system on Ubuntu
@@ -101,11 +101,11 @@ jobs:
         export BDB_PREFIX=/opt/homebrew/opt/berkeley-db@4
         export CXXFLAGS="-I/opt/homebrew/opt/berkeley-db@4/include -I/opt/homebrew/opt/fmt/include"
         export LDFLAGS="-L/opt/homebrew/opt/berkeley-db@4/lib -L/opt/homebrew/opt/fmt/lib"
-        export BOOST_ROOT=$PWD/depends/arm64-apple-darwin
-        export BOOST_INCLUDEDIR=$PWD/depends/arm64-apple-darwin/include
-        export BOOST_LIBRARYDIR=$PWD/depends/arm64-apple-darwin/lib
+        export BOOST_ROOT=$PWD/depends/x86_64-apple-darwin
+        export BOOST_INCLUDEDIR=$PWD/depends/x86_64-apple-darwin/include
+        export BOOST_LIBRARYDIR=$PWD/depends/x86_64-apple-darwin/lib
         ./autogen.sh
-        CONFIG_SITE=$PWD/depends/arm64-apple-darwin/share/config.site ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
+        CONFIG_SITE=$PWD/depends/x86_64-apple-darwin/share/config.site ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
         make
         make deploy
 
