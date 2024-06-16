@@ -17,13 +17,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-18.04, windows-latest, macos-latest]
-        include:
-        - os: ubuntu-18.04
-          build-mode: manual
-        - os: windows-latest
-          build-mode: manual
-        - os: macos-latest
-          build-mode: manual
 
     steps:
     - name: Checkout repository
@@ -63,20 +56,10 @@ jobs:
         echo 'export CPPFLAGS="-I/usr/local/opt/qt@5/include -I/opt/homebrew/opt/berkeley-db@4/include -I/opt/homebrew/opt/fmt/include"' >> ~/.zprofile
         echo 'export PKG_CONFIG_PATH="/usr/local/opt/qt@5/lib/pkgconfig:/opt/homebrew/opt/berkeley-db@4/lib/pkgconfig:/opt/homebrew/opt/fmt/lib/pkgconfig"' >> ~/.zprofile
         source ~/.zprofile
-        python3 -m venv venv
-        source venv/bin/activate
-        pip install setuptools ez_setup
-
-    - name: Verify compiler on macOS
-      if: matrix.os == 'macos-latest'
-      run: |
-        g++ --version
-        g++ -xc++ -E -v -
 
     - name: Build Dependencies using the depends system on macOS
       if: matrix.os == 'macos-latest'
       run: |
-        source venv/bin/activate
         cd depends
         make HOST=x86_64-apple-darwin
         cd ..
@@ -112,7 +95,6 @@ jobs:
         export BDB_PREFIX=/opt/homebrew/opt/berkeley-db@4
         export CXXFLAGS="-I/opt/homebrew/opt/berkeley-db@4/include -I/opt/homebrew/opt/fmt/include -I/usr/local/opt/qt@5/include"
         export LDFLAGS="-L/opt/homebrew/opt/berkeley-db@4/lib -L/opt/homebrew/opt/fmt/lib -L/usr/local/opt/qt@5/lib"
-        source venv/bin/activate
         ./autogen.sh
         CONFIG_SITE=$PWD/depends/x86_64-apple-darwin/share/config.site ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --prefix=/usr/local --with-qt-dir=/usr/local/opt/qt@5 --with-qt-incdir=/usr/local/opt/qt@5/include --with-qt-libdir=/usr/local/opt/qt@5/lib
         make
@@ -140,3 +122,4 @@ jobs:
           src/qt/bitrae-qt
           *.exe
           *.tar.gz
+
