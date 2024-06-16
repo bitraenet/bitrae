@@ -30,62 +30,63 @@ jobs:
         ./contrib/install_db4.sh $(pwd)
         export BDB_PREFIX=$(pwd)/db4
         echo "BDB_PREFIX is set to $BDB_PREFIX"
-
-    - name: Set up Dependencies on Windows
-      if: matrix.os == 'windows-latest'
-      run: |
-        choco install -y msys2
-        choco install -y mingw
-        choco install -y nsis
-        refreshenv
-        C:\tools\msys64\usr\bin\bash -lc "pacman -Syu --noconfirm"
-        C:\tools\msys64\usr\bin\bash -lc "pacman -S --noconfirm base-devel mingw-w64-x86_64-toolchain"
-        C:\tools\msys64\usr\bin\bash -lc "echo 'export PATH=/mingw64/bin:$PATH' >> ~/.bashrc"
-        C:\tools\msys64\usr\bin\bash -lc "source ~/.bashrc"
-        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && ./contrib/install_db4.sh $(pwd)"
-        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && export BDB_PREFIX=$(pwd)/db4"
-        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && ./autogen.sh"
-        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && ./configure BDB_LIBS=\"-L${BDB_PREFIX}/lib -ldb_cxx-4.8\" BDB_CFLAGS=\"-I${BDB_PREFIX}/include\" --host=x86_64-w64-mingw32 --prefix=/usr/local --disable-tests --disable-gui-tests"
-        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && mingw32-make"
-        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && mingw32-make deploy"
-
-    - name: Set up Dependencies on macOS
-      if: matrix.os == 'macos-latest'
-      run: |
-        brew install automake libtool boost miniupnpc pkg-config python qt libevent qrencode fmt librsvg sqlite berkeley-db@4 zmq
-        echo 'export PATH="/opt/homebrew/opt/berkeley-db@4/bin:$PATH"' >> ~/.bash_profile
-        echo 'export LDFLAGS="-L/opt/homebrew/opt/berkeley-db@4/lib -L/opt/homebrew/opt/boost/lib -L/opt/homebrew/opt/fmt/lib"' >> ~/.bash_profile
-        echo 'export CPPFLAGS="-I/opt/homebrew/opt/berkeley-db@4/include -I/opt/homebrew/opt/boost/include -I/opt/homebrew/opt/fmt/include"' >> ~/.bash_profile
-        echo 'export PKG_CONFIG_PATH="/opt/homebrew/opt/berkeley-db@4/lib/pkgconfig:/opt/homebrew/opt/boost/lib/pkgconfig:/opt/homebrew/opt/fmt/lib/pkgconfig"' >> ~/.bash_profile
-        source ~/.bash_profile
+      env:
+        DEBIAN_FRONTEND: noninteractive
 
     - name: Build on Ubuntu
       if: matrix.os == 'ubuntu-18.04'
       run: |
         export BDB_PREFIX=$(pwd)/db4
         ./autogen.sh
-        ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --without-gui
+        ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
         make
-        make deploy
+
+    - name: Set up Dependencies on Windows
+      if: matrix.os == 'windows-latest'
+      run: |
+        choco install nsis
+        choco install msys2
+        refreshenv
+        msys2 -c "pacman -Syu --noconfirm"
+        msys2 -c "pacman -S --noconfirm base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-boost mingw-w64-x86_64-libevent mingw-w64-x86_64-openssl mingw-w64-x86_64-zeromq"
+        msys2 -c "pacman -S --noconfirm mingw-w64-x86_64-gcc"
+        msys2 -c "echo 'export PATH=/mingw64/bin:$PATH' >> ~/.bashrc"
+        msys2 -c "source ~/.bashrc"
+        msys2 -c "./contrib/install_db4.sh $(pwd)"
+        msys2 -c "export BDB_PREFIX=$(pwd)/db4"
+        msys2 -c "echo 'BDB_PREFIX is set to $BDB_PREFIX'"
 
     - name: Build on Windows
       if: matrix.os == 'windows-latest'
       run: |
-        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && export BDB_PREFIX=$(pwd)/db4"
-        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && ./autogen.sh"
-        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && ./configure BDB_LIBS=\"-L${BDB_PREFIX}/lib -ldb_cxx-4.8\" BDB_CFLAGS=\"-I${BDB_PREFIX}/include\" --host=x86_64-w64-mingw32 --prefix=/usr/local --disable-tests --disable-gui-tests"
-        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && mingw32-make"
-        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && mingw32-make deploy"
+        export BDB_PREFIX=$(pwd)/db4
+        ./autogen.sh
+        ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --host=x86_64-w64-mingw32 --prefix=/usr/local --disable-tests --disable-gui-tests
+        mingw32-make
+        mingw32-make deploy
+      shell: msys2 {0}
+
+    - name: Set up Dependencies on macOS
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install autoconf automake libtool pkg-config boost openssl qt berkeley-db@4 zmq
+        echo 'export PATH="/usr/local/opt/berkeley-db@4/bin:$PATH"' >> ~/.bash_profile
+        echo 'export LDFLAGS="-L/usr/local/opt/berkeley-db@4/lib"' >> ~/.bash_profile
+        echo 'export CPPFLAGS="-I/usr/local/opt/berkeley-db@4/include"' >> ~/.bash_profile
+        echo 'export PKG_CONFIG_PATH="/usr/local/opt/berkeley-db@4/lib/pkgconfig"' >> ~/.bash_profile
+        source ~/.bash_profile
+        ./contrib/install_db4.sh $(pwd)
+        export BDB_PREFIX=$(pwd)/db4
+        echo "BDB_PREFIX is set to $BDB_PREFIX"
+        python3 -m pip install setuptools ez_setup
 
     - name: Build on macOS
       if: matrix.os == 'macos-latest'
       run: |
-        ./contrib/install_db4.sh $(pwd)
         export BDB_PREFIX=$(pwd)/db4
         ./autogen.sh
-        ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --without-gui
+        ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
         make
-        make deploy
 
     - name: Archive Artifacts
       uses: actions/upload-artifact@v3
@@ -95,3 +96,4 @@ jobs:
           osx/dist/Bitrae-Qt.app
           bitrae-0.1.0-win64-setup-unsigned.exe
           bitrae-0.1.0-linux-x86_64.tar.gz
+
