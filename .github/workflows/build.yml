@@ -111,9 +111,6 @@ jobs:
         export BDB_PREFIX=/opt/homebrew/opt/berkeley-db@4
         export CXXFLAGS="-I/opt/homebrew/opt/berkeley-db@4/include -I/opt/homebrew/opt/fmt/include -I/opt/homebrew/opt/qt/include"
         export LDFLAGS="-L/opt/homebrew/opt/berkeley-db@4/lib -L/opt/homebrew/opt/fmt/lib -L/opt/homebrew/opt/qt/lib"
-        export BOOST_ROOT=$PWD/depends/x86_64-apple-darwin
-        export BOOST_INCLUDEDIR=$PWD/depends/x86_64-apple-darwin/include
-        export BOOST_LIBRARYDIR=$PWD/depends/x86_64-apple-darwin/lib
         source venv/bin/activate
         ./autogen.sh
         CONFIG_SITE=$PWD/depends/x86_64-apple-darwin/share/config.site ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --prefix=/usr/local --with-qt-dir=/opt/homebrew/opt/qt --with-qt-incdir=/opt/homebrew/opt/qt/include --with-qt-libdir=/opt/homebrew/opt/qt/lib
