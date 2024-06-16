@@ -62,11 +62,14 @@ jobs:
         echo 'export CPPFLAGS="-I/opt/homebrew/opt/berkeley-db@4/include -I/opt/homebrew/opt/fmt/include"' >> ~/.bash_profile
         echo 'export PKG_CONFIG_PATH="/opt/homebrew/opt/berkeley-db@4/lib/pkgconfig:/opt/homebrew/opt/fmt/lib/pkgconfig"' >> ~/.bash_profile
         source ~/.bash_profile
-        pip3 install setuptools ez_setup
+        python3 -m venv venv
+        source venv/bin/activate
+        pip install setuptools ez_setup
 
     - name: Build Dependencies using the depends system on macOS
       if: matrix.os == 'macos-latest'
       run: |
+        source venv/bin/activate
         cd depends
         make HOST=x86_64-apple-darwin
         cd ..
@@ -105,6 +108,7 @@ jobs:
         export BOOST_ROOT=$PWD/depends/x86_64-apple-darwin
         export BOOST_INCLUDEDIR=$PWD/depends/x86_64-apple-darwin/include
         export BOOST_LIBRARYDIR=$PWD/depends/x86_64-apple-darwin/lib
+        source venv/bin/activate
         ./autogen.sh
         CONFIG_SITE=$PWD/depends/x86_64-apple-darwin/share/config.site ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
         make
