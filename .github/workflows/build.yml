@@ -137,4 +137,3 @@ jobs:
           osx/dist/Bitrae-Qt.app
           bitrae-0.1.0-win64-setup-unsigned.exe
           bitrae-0.1.0-linux-x86_64.tar.gz
-
