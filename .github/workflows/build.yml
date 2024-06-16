@@ -49,19 +49,21 @@ jobs:
         C:\tools\msys64\usr\bin\bash -lc "pacman -S --noconfirm base-devel mingw-w64-x86_64-toolchain"
         C:\tools\msys64\usr\bin\bash -lc "echo 'export PATH=/mingw64/bin:$PATH' >> ~/.bashrc"
         C:\tools\msys64\usr\bin\bash -lc "source ~/.bashrc"
-        C:\tools\msys64\usr\bin\bash -lc "cd $GITHUB_WORKSPACE && ./contrib/install_db4.sh $(pwd)"
+        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && ./contrib/install_db4.sh $(pwd)"
         set BDB_PREFIX=$(pwd)\db4
         echo "BDB_PREFIX is set to $BDB_PREFIX"
 
     - name: Set up Dependencies on macOS
       if: matrix.os == 'macos-latest'
       run: |
-        brew install automake libtool boost miniupnpc pkg-config python qt libevent qrencode fmt librsvg sqlite berkeley-db@4 zmq
-        brew link boost --force
+        brew install automake libtool miniupnpc pkg-config python qt libevent qrencode fmt librsvg sqlite zmq
+        brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/f0875183fc3db57d8b31344e741ca1c16d570686/Formula/boost@1.70.rb
+        brew link boost@1.70 --force
+        brew install berkeley-db@4
         echo 'export PATH="/opt/homebrew/opt/berkeley-db@4/bin:$PATH"' >> ~/.bash_profile
-        echo 'export LDFLAGS="-L/opt/homebrew/opt/berkeley-db@4/lib -L/opt/homebrew/opt/boost/lib -L/opt/homebrew/opt/fmt/lib"' >> ~/.bash_profile
-        echo 'export CPPFLAGS="-I/opt/homebrew/opt/berkeley-db@4/include -I/opt/homebrew/opt/boost/include -I/opt/homebrew/opt/fmt/include"' >> ~/.bash_profile
-        echo 'export PKG_CONFIG_PATH="/opt/homebrew/opt/berkeley-db@4/lib/pkgconfig:/opt/homebrew/opt/boost/lib/pkgconfig:/opt/homebrew/opt/fmt/lib/pkgconfig"' >> ~/.bash_profile
+        echo 'export LDFLAGS="-L/opt/homebrew/opt/berkeley-db@4/lib -L/opt/homebrew/opt/boost@1.70/lib -L/opt/homebrew/opt/fmt/lib"' >> ~/.bash_profile
+        echo 'export CPPFLAGS="-I/opt/homebrew/opt/berkeley-db@4/include -I/opt/homebrew/opt/boost@1.70/include -I/opt/homebrew/opt/fmt/include"' >> ~/.bash_profile
+        echo 'export PKG_CONFIG_PATH="/opt/homebrew/opt/berkeley-db@4/lib/pkgconfig:/opt/homebrew/opt/boost@1.70/lib/pkgconfig:/opt/homebrew/opt/fmt/lib/pkgconfig"' >> ~/.bash_profile
         source ~/.bash_profile
 
     - name: Configure and Build on Ubuntu for Windows
@@ -78,13 +80,13 @@ jobs:
       if: matrix.os == 'macos-latest'
       run: |
         export BDB_PREFIX=/opt/homebrew/opt/berkeley-db@4
-        export CXXFLAGS="-I/opt/homebrew/opt/berkeley-db@4/include -I/opt/homebrew/opt/boost/include -I/opt/homebrew/opt/fmt/include"
-        export LDFLAGS="-L/opt/homebrew/opt/berkeley-db@4/lib -L/opt/homebrew/opt/boost/lib -L/opt/homebrew/opt/fmt/lib"
-        export BOOST_ROOT=/opt/homebrew/opt/boost
-        export BOOST_INCLUDEDIR=/opt/homebrew/opt/boost/include
-        export BOOST_LIBRARYDIR=/opt/homebrew/opt/boost/lib
+        export CXXFLAGS="-I/opt/homebrew/opt/berkeley-db@4/include -I/opt/homebrew/opt/boost@1.70/include -I/opt/homebrew/opt/fmt/include"
+        export LDFLAGS="-L/opt/homebrew/opt/berkeley-db@4/lib -L/opt/homebrew/opt/boost@1.70/lib -L/opt/homebrew/opt/fmt/lib"
+        export BOOST_ROOT=/opt/homebrew/opt/boost@1.70
+        export BOOST_INCLUDEDIR=/opt/homebrew/opt/boost@1.70/include
+        export BOOST_LIBRARYDIR=/opt/homebrew/opt/boost@1.70/lib
         ./autogen.sh
-        ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --with-boost-libdir=/opt/homebrew/opt/boost/lib
+        ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --with-boost-libdir=/opt/homebrew/opt/boost@1.70/lib
         make
         make deploy
 
@@ -92,6 +94,7 @@ jobs:
       if: matrix.os == 'windows-latest'
       shell: bash {0}
       run: |
+        cd $GITHUB_WORKSPACE
         set BDB_PREFIX=$(pwd)/db4
         ./autogen.sh
         ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --host=x86_64-w64-mingw32 --prefix=/usr/local --disable-tests --disable-gui-tests
@@ -106,3 +109,4 @@ jobs:
           osx/dist/Bitrae-Qt.app
           bitrae-0.1.0-win64-setup-unsigned.exe
           bitrae-0.1.0-linux-x86_64.tar.gz
+
