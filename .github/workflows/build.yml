@@ -116,7 +116,7 @@ jobs:
         export BOOST_LIBRARYDIR=$PWD/depends/x86_64-apple-darwin/lib
         source venv/bin/activate
         ./autogen.sh
-        CONFIG_SITE=$PWD/depends/x86_64-apple-darwin/share/config.site ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
+        CONFIG_SITE=$PWD/depends/x86_64-apple-darwin/share/config.site ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --prefix=/usr/local
         make
         make deploy
 
@@ -137,4 +137,3 @@ jobs:
           osx/dist/Bitrae-Qt.app
           bitrae-0.1.0-win64-setup-unsigned.exe
           bitrae-0.1.0-linux-x86_64.tar.gz
-
