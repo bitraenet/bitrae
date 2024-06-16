@@ -45,9 +45,10 @@ jobs:
         choco install -y mingw
         choco install -y nsis
         refreshenv
-        msys2 -c "pacman -S --noconfirm base-devel mingw-w64-x86_64-toolchain"
-        msys2 -c "echo 'export PATH=/mingw64/bin:$PATH' >> ~/.bashrc"
-        msys2 -c "source ~/.bashrc"
+        C:\tools\msys64\usr\bin\bash -lc "pacman -Syu --noconfirm"
+        C:\tools\msys64\usr\bin\bash -lc "pacman -S --noconfirm base-devel mingw-w64-x86_64-toolchain"
+        C:\tools\msys64\usr\bin\bash -lc "echo 'export PATH=/mingw64/bin:$PATH' >> ~/.bashrc"
+        C:\tools\msys64\usr\bin\bash -lc "source ~/.bashrc"
         ./contrib/install_db4.sh $(pwd)
         export BDB_PREFIX=$(pwd)/db4
         echo "BDB_PREFIX is set to $BDB_PREFIX"
@@ -85,13 +86,13 @@ jobs:
 
     - name: Configure and Build on Windows
       if: matrix.os == 'windows-latest'
-      shell: msys2 {0}
+      shell: bash {0}
       run: |
         export BDB_PREFIX=$(pwd)/db4
         ./autogen.sh
         ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --host=x86_64-w64-mingw32 --prefix=/usr/local --disable-tests --disable-gui-tests
-        make
-        make deploy
+        mingw32-make
+        mingw32-make deploy
 
     - name: Archive Artifacts
       uses: actions/upload-artifact@v3
