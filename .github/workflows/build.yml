@@ -50,7 +50,7 @@ jobs:
         C:\tools\msys64\usr\bin\bash -lc "echo 'export PATH=/mingw64/bin:$PATH' >> ~/.bashrc"
         C:\tools\msys64\usr\bin\bash -lc "source ~/.bashrc"
         C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && ./contrib/install_db4.sh $(pwd)"
-        set BDB_PREFIX=$(pwd)\db4
+        C:\tools\msys64\usr\bin\bash -lc "export BDB_PREFIX=$(pwd)/db4"
         echo "BDB_PREFIX is set to $BDB_PREFIX"
 
     - name: Set up Dependencies on macOS
@@ -62,6 +62,7 @@ jobs:
         echo 'export CPPFLAGS="-I/opt/homebrew/opt/berkeley-db@4/include -I/opt/homebrew/opt/fmt/include"' >> ~/.bash_profile
         echo 'export PKG_CONFIG_PATH="/opt/homebrew/opt/berkeley-db@4/lib/pkgconfig:/opt/homebrew/opt/fmt/lib/pkgconfig"' >> ~/.bash_profile
         source ~/.bash_profile
+        pip3 install setuptools ez_setup
 
     - name: Build Dependencies using the depends system on macOS
       if: matrix.os == 'macos-latest'
