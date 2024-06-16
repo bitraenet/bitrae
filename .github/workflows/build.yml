@@ -43,69 +43,47 @@ jobs:
         C:\tools\msys64\usr\bin\bash -lc "echo 'export PATH=/mingw64/bin:$PATH' >> ~/.bashrc"
         C:\tools\msys64\usr\bin\bash -lc "source ~/.bashrc"
         C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && ./contrib/install_db4.sh $(pwd)"
-        C:\tools\msys64\usr\bin\bash -lc "export BDB_PREFIX=$(pwd)/db4"
-        echo "BDB_PREFIX is set to $BDB_PREFIX"
+        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && export BDB_PREFIX=$(pwd)/db4"
+        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && ./autogen.sh"
+        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && ./configure BDB_LIBS=\"-L${BDB_PREFIX}/lib -ldb_cxx-4.8\" BDB_CFLAGS=\"-I${BDB_PREFIX}/include\" --host=x86_64-w64-mingw32 --prefix=/usr/local --disable-tests --disable-gui-tests"
+        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && mingw32-make"
+        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && mingw32-make deploy"
 
     - name: Set up Dependencies on macOS
       if: matrix.os == 'macos-latest'
       run: |
-        brew install automake libtool miniupnpc pkg-config python libevent qrencode fmt librsvg sqlite zmq
-        brew install qt@5
-        echo 'export PATH="/usr/local/opt/qt@5/bin:$PATH"' >> ~/.zprofile
-        echo 'export LDFLAGS="-L/usr/local/opt/qt@5/lib -L/opt/homebrew/opt/berkeley-db@4/lib -L/opt/homebrew/opt/fmt/lib"' >> ~/.zprofile
-        echo 'export CPPFLAGS="-I/usr/local/opt/qt@5/include -I/opt/homebrew/opt/berkeley-db@4/include -I/opt/homebrew/opt/fmt/include"' >> ~/.zprofile
-        echo 'export PKG_CONFIG_PATH="/usr/local/opt/qt@5/lib/pkgconfig:/opt/homebrew/opt/berkeley-db@4/lib/pkgconfig:/opt/homebrew/opt/fmt/lib/pkgconfig"' >> ~/.zprofile
-        source ~/.zprofile
+        brew install automake libtool boost miniupnpc pkg-config python qt libevent qrencode fmt librsvg sqlite berkeley-db@4 zmq
+        echo 'export PATH="/opt/homebrew/opt/berkeley-db@4/bin:$PATH"' >> ~/.bash_profile
+        echo 'export LDFLAGS="-L/opt/homebrew/opt/berkeley-db@4/lib -L/opt/homebrew/opt/boost/lib -L/opt/homebrew/opt/fmt/lib"' >> ~/.bash_profile
+        echo 'export CPPFLAGS="-I/opt/homebrew/opt/berkeley-db@4/include -I/opt/homebrew/opt/boost/include -I/opt/homebrew/opt/fmt/include"' >> ~/.bash_profile
+        echo 'export PKG_CONFIG_PATH="/opt/homebrew/opt/berkeley-db@4/lib/pkgconfig:/opt/homebrew/opt/boost/lib/pkgconfig:/opt/homebrew/opt/fmt/lib/pkgconfig"' >> ~/.bash_profile
+        source ~/.bash_profile
 
-    - name: Build Dependencies using the depends system on macOS
-      if: matrix.os == 'macos-latest'
-      run: |
-        cd depends
-        make HOST=x86_64-apple-darwin
-        cd ..
-
-    - name: Build Dependencies using the depends system on Ubuntu
+    - name: Build on Ubuntu
       if: matrix.os == 'ubuntu-18.04'
       run: |
-        cd depends
-        make HOST=x86_64-pc-linux-gnu
-        cd ..
+        export BDB_PREFIX=$(pwd)/db4
+        ./autogen.sh
+        ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --without-gui
+        make
+        make deploy
 
-    - name: Build Dependencies using the depends system on Windows
+    - name: Build on Windows
       if: matrix.os == 'windows-latest'
-      shell: bash {0}
       run: |
-        cd depends
-        make HOST=x86_64-w64-mingw32
-        cd ..
+        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && export BDB_PREFIX=$(pwd)/db4"
+        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && ./autogen.sh"
+        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && ./configure BDB_LIBS=\"-L${BDB_PREFIX}/lib -ldb_cxx-4.8\" BDB_CFLAGS=\"-I${BDB_PREFIX}/include\" --host=x86_64-w64-mingw32 --prefix=/usr/local --disable-tests --disable-gui-tests"
+        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && mingw32-make"
+        C:\tools\msys64\usr\bin\bash -lc "cd ${GITHUB_WORKSPACE} && mingw32-make deploy"
 
-    - name: Configure and Build on Ubuntu for Windows
-      if: matrix.os == 'ubuntu-18.04'
-      run: |
-        export BDB_PREFIX=$(pwd)/db4
-        PATH=$(echo "$PATH" | sed -e 's/:\/mnt.*//g') # Strip out problematic Windows %PATH% imported vars
-        ./autogen.sh
-        CONFIG_SITE=$PWD/depends/x86_64-w64-mingw32/share/config.site ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --host=x86_64-w64-mingw32 --prefix=/usr/local --disable-tests --disable-gui-tests
-        make
-        make deploy
-
-    - name: Configure and Build on macOS
+    - name: Build on macOS
       if: matrix.os == 'macos-latest'
       run: |
-        export BDB_PREFIX=/opt/homebrew/opt/berkeley-db@4
-        export CXXFLAGS="-I/opt/homebrew/opt/berkeley-db@4/include -I/opt/homebrew/opt/fmt/include -I/usr/local/opt/qt@5/include"
-        export LDFLAGS="-L/opt/homebrew/opt/berkeley-db@4/lib -L/opt/homebrew/opt/fmt/lib -L/usr/local/opt/qt@5/lib"
-        ./autogen.sh
-        CONFIG_SITE=$PWD/depends/x86_64-apple-darwin/share/config.site ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --prefix=/usr/local --with-qt-dir=/usr/local/opt/qt@5 --with-qt-incdir=/usr/local/opt/qt@5/include --with-qt-libdir=/usr/local/opt/qt@5/lib
-        make
-        make deploy
-
-    - name: Configure and Build on Ubuntu for Linux
-      if: matrix.os == 'ubuntu-18.04'
-      run: |
+        ./contrib/install_db4.sh $(pwd)
         export BDB_PREFIX=$(pwd)/db4
         ./autogen.sh
-        CONFIG_SITE=$PWD/depends/x86_64-pc-linux-gnu/share/config.site ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
+        ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --without-gui
         make
         make deploy
 
@@ -115,11 +93,5 @@ jobs:
         name: binaries
         path: |
           osx/dist/Bitrae-Qt.app
-          bitrae-*.dmg
-          src/bitraed
-          src/bitrae-cli
-          src/bitrae-tx
-          src/qt/bitrae-qt
-          *.exe
-          *.tar.gz
-
+          bitrae-0.1.0-win64-setup-unsigned.exe
+          bitrae-0.1.0-linux-x86_64.tar.gz
