@@ -56,13 +56,11 @@ jobs:
       if: matrix.os == 'macos-latest'
       run: |
         brew install automake libtool boost miniupnpc pkg-config python qt libevent qrencode fmt librsvg sqlite berkeley-db@4
-        export PATH="/opt/homebrew/opt/berkeley-db@4/bin:$PATH"
-        export LDFLAGS="-L/opt/homebrew/opt/berkeley-db@4/lib"
-        export CPPFLAGS="-I/opt/homebrew/opt/berkeley-db@4/include"
-        export PKG_CONFIG_PATH="/opt/homebrew/opt/berkeley-db@4/lib/pkgconfig"
-        ./contrib/install_db4.sh $(pwd)
-        export BDB_PREFIX=$(pwd)/db4
-        echo "BDB_PREFIX is set to $BDB_PREFIX"
+        echo 'export PATH="/opt/homebrew/opt/berkeley-db@4/bin:$PATH"' >> ~/.bash_profile
+        echo 'export LDFLAGS="-L/opt/homebrew/opt/berkeley-db@4/lib"' >> ~/.bash_profile
+        echo 'export CPPFLAGS="-I/opt/homebrew/opt/berkeley-db@4/include"' >> ~/.bash_profile
+        echo 'export PKG_CONFIG_PATH="/opt/homebrew/opt/berkeley-db@4/lib/pkgconfig"' >> ~/.bash_profile
+        source ~/.bash_profile
 
     - name: Configure and Build on Ubuntu for Windows
       if: matrix.os == 'ubuntu-18.04'
@@ -77,9 +75,9 @@ jobs:
     - name: Configure and Build on macOS
       if: matrix.os == 'macos-latest'
       run: |
-        export BDB_PREFIX=$(pwd)/db4
-        export CXXFLAGS="-I/opt/homebrew/opt/berkeley-db@4/include"
-        export LDFLAGS="-L/opt/homebrew/opt/berkeley-db@4/lib"
+        export BDB_PREFIX=/opt/homebrew/opt/berkeley-db@4
+        export CXXFLAGS="-I${BDB_PREFIX}/include"
+        export LDFLAGS="-L${BDB_PREFIX}/lib"
         ./autogen.sh
         ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
         make
