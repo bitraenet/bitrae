@@ -133,6 +133,10 @@ jobs:
         name: binaries
         path: |
           osx/dist/Bitrae-Qt.app
-          bitrae-0.1.0-win64-setup-unsigned.exe
-          bitrae-0.1.0-linux-x86_64.tar.gz
-
+          bitrae-*.dmg
+          src/bitraed
+          src/bitrae-cli
+          src/bitrae-tx
+          src/qt/bitrae-qt
+          *.exe
+          *.tar.gz
