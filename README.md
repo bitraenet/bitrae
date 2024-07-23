@@ -29,7 +29,7 @@ Welcome to the official documentation for Bitrae, the cryptocurrency designed by
 
 - **Mining Rewards and Difficulty Adjustment**:
   - **Reward per Block**: Miners are initially rewarded with 50 Bitrae coins per block, a testament to our commitment to rewarding the mining community's efforts.
-  - **Difficulty Retarget**: The network adjusts its difficulty every 2304 blocks, ensuring consistent block times and network stability, even as mining power fluctuates.
+  - **Difficulty Retarget**: The network difficulty adjustment is every 2016 blocks, ensuring consistent block times and network stability, even as mining power fluctuates.
 
 ## Community-Driven Development
 
