@@ -170,19 +170,19 @@ deploy: $(BITCOIN_WIN_INSTALLER)
 endif
 
 $(BITCOIN_QT_BIN): FORCE
-	$(MAKE) -C src qt/$(@F)
+	$(MAKE) -C src qt/$(@F) LDADD="$(LIBS) $(CRYPTO_LIBS) $(SSL_LIBS)"
 
 $(BITCOIND_BIN): FORCE
-	$(MAKE) -C src $(@F)
+	$(MAKE) -C src $(@F) LDADD="$(LIBS) $(CRYPTO_LIBS) $(SSL_LIBS)"
 
 $(BITCOIN_CLI_BIN): FORCE
-	$(MAKE) -C src $(@F)
+	$(MAKE) -C src $(@F) LDADD="$(LIBS) $(CRYPTO_LIBS) $(SSL_LIBS)"
 
 $(BITCOIN_TX_BIN): FORCE
-	$(MAKE) -C src $(@F)
+	$(MAKE) -C src $(@F) LDADD="$(LIBS) $(CRYPTO_LIBS) $(SSL_LIBS)"
 
 $(BITCOIN_WALLET_BIN): FORCE
-	$(MAKE) -C src $(@F)
+	$(MAKE) -C src $(@F) LDADD="$$(LIBS) $(CRYPTO_LIBS) $(SSL_LIBS)"
 
 if USE_LCOV
 LCOV_FILTER_PATTERN = \
