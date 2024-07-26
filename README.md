@@ -47,22 +47,18 @@ To set up a full node and join the Bitrae network, please use the `Bitrae_Node_I
     ```sh
     wget https://raw.githubusercontent.com/bitraenet/bitrae/main/Bitrae_Node_Installer.sh
     ```
-2. Make the script executable with the command:
-    ```sh
-    chmod +x Bitrae_Node_Installer.sh
-    ```
-3. Run the script with the command:
+2. Run the script with the command:
     ```sh
     bash Bitrae_Node_Installer.sh
     ```
-4. Follow the on-screen instructions to complete the installation.
+3. Follow the on-screen instructions to complete the installation.
 
 
 
-**Note**: By default, the script installs the node without a GUI. If you prefer a GUI version, you need to edit line 80 of the script. Remove the `--without-gui` flag from this line or copy and paste below:
+**Note**: By default, the script installs the full node with the GUI option. If you prefer a non GUI version, you need to edit line 80 of the script. Add the `--without-gui` flag at the end of line or copy and paste below:
 
 ```
-./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
+./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --without-gui
 ```
 
 Feel free to modify other options in the script according to your preferences.
