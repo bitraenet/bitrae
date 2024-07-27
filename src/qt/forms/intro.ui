@@ -210,6 +210,7 @@
      </property>
     </widget>
    </item>
+   <!--
    <item>
     <widget class="QCheckBox" name="prune">
      <property name="toolTip">
@@ -220,6 +221,7 @@
      </property>
     </widget>
    </item>
+   -->
    <item>
     <widget class="QLabel" name="lblExplanation2">
      <property name="text">
@@ -230,6 +232,7 @@
      </property>
     </widget>
    </item>
+   <!--
    <item>
     <widget class="QLabel" name="lblExplanation3">
      <property name="text">
@@ -240,6 +243,7 @@
      </property>
     </widget>
    </item>
+   -->
    <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
@@ -301,3 +305,4 @@
   </connection>
  </connections>
 </ui>
+
