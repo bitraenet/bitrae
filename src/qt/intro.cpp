@@ -125,7 +125,7 @@ Intro::Intro(QWidget *parent, int64_t blockchain_size_gb, int64_t chain_state_si
     signalled(false),
     m_blockchain_size_gb(blockchain_size_gb),
     m_chain_state_size_gb(chain_state_size_gb),
-    m_prune_target_gb{GetPruneTargetGB()}
+//    m_prune_target_gb{GetPruneTargetGB()}
 {
     ui->setupUi(this);
     ui->welcomeLabel->setText(ui->welcomeLabel->text().arg(PACKAGE_NAME));
@@ -233,7 +233,7 @@ bool Intro::showIfNeeded(bool& did_show_intro, bool& prune)
         }
 
         // Additional preferences:
-        prune = intro.ui->prune->isChecked();
+//        prune = intro.ui->prune->isChecked();
 
         settings.setValue("strDataDir", dataDir);
         settings.setValue("fReset", false);
@@ -352,19 +352,19 @@ QString Intro::getPathToCheck()
     return retval;
 }
 
-void Intro::UpdatePruneLabels(bool prune_checked)
-{
-    m_required_space_gb = m_blockchain_size_gb + m_chain_state_size_gb;
-    QString storageRequiresMsg = tr("At least %1 GB of data will be stored in this directory, and it will grow over time.");
-    if (false && prune_checked && m_prune_target_gb <= m_blockchain_size_gb) {
-        m_required_space_gb = m_prune_target_gb + m_chain_state_size_gb;
-        storageRequiresMsg = tr("Approximately %1 GB of data will be stored in this directory.");
-    }
-    ui->lblExplanation3->setVisible(false); // Always hide lblExplanation3
-    ui->sizeWarningLabel->setText(
-        tr("%1 will download and store a copy of the Bitrae block chain.").arg(PACKAGE_NAME) + " " +
-        storageRequiresMsg.arg(m_required_space_gb) + " " +
-        tr("The wallet will also be stored in this directory.")
-    );
-    this->adjustSize();
-}
+// void Intro::UpdatePruneLabels(bool prune_checked)
+// {
+//    m_required_space_gb = m_blockchain_size_gb + m_chain_state_size_gb;
+//    QString storageRequiresMsg = tr("At least %1 GB of data will be stored in this directory, and it will grow over time.");
+//    if (false && prune_checked && m_prune_target_gb <= m_blockchain_size_gb) {
+//        m_required_space_gb = m_prune_target_gb + m_chain_state_size_gb;
+//        storageRequiresMsg = tr("Approximately %1 GB of data will be stored in this directory.");
+//    }
+//    ui->lblExplanation3->setVisible(false); // Always hide lblExplanation3
+//    ui->sizeWarningLabel->setText(
+//        tr("%1 will download and store a copy of the Bitrae block chain.").arg(PACKAGE_NAME) + " " +
+//        storageRequiresMsg.arg(m_required_space_gb) + " " +
+//        tr("The wallet will also be stored in this directory.")
+//    );
+//    this->adjustSize();
+// }
