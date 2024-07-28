@@ -91,6 +91,8 @@ if [[ "$install_binaries" =~ ^[Yy]$ ]]; then
     echo_color "0;34" "Installing binaries"
     sudo make install
     check_status
+    
+# Final completion message    
     echo_color "0;32" "Bitrae Node install complete. Binaries installed. Run command bitraed to start Node or run bitrae-qt to open GUI wallet, use flag -testnet to run node in TESTNET."
 else
     echo_color "0;32" "Bitrae Node install complete. Run command ./bitraed in $INSTALL_DIR/src to start Node or ./bitrae-qt in $INSTALL_DIR/src/qt to open GUI wallet, use flag -testnet to run node in TESTNET."
