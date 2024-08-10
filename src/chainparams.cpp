@@ -99,10 +99,10 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].nStartHeight = 0; // Activating Taproot from genesis to leverage advanced privacy and efficiency features immediately.
         consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].nTimeoutHeight = 0; // No timeout as activation is immediate and permanent from the start.
 
-        // Deployment of MWEB (LIP-0002, LIP-0003, and LIP-0004)
+        // Deployment of MWEB (LIP-0002, LIP-0003, and LIP-0004) - Disable MWEB by assigning unreachable start and timeout heights
         consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].bit = 4;
-        consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].nStartHeight = 0; // Deploying MWEB from genesis to enhance privacy and fungibility from the outset.
-        consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].nTimeoutHeight = 0; // No timeout, implementing MWEB as a core feature of the network from the beginning.
+        consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].nStartHeight = 99999999; // Set to an unreachable block height
+        consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].nTimeoutHeight = 99999999; // Set to the same unreachable block height
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000000000000000");
@@ -204,10 +204,10 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].nStartHeight = 0; // Activating Taproot from genesis to leverage advanced privacy and efficiency features immediately.
         consensus.vDeployments[Consensus::DEPLOYMENT_TAPROOT].nTimeoutHeight = 0; // No timeout as activation is immediate and permanent from the start.
 
-        // Deployment of MWEB (LIP-0002, LIP-0003, and LIP-0004)
+        // Deployment of MWEB (LIP-0002, LIP-0003, and LIP-0004) - Disable MWEB by assigning unreachable start and timeout heights
         consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].bit = 4;
-        consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].nStartHeight = 9400; // Deploying MWEB from block 9400 to enhance privacy and fungibility.
-        consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].nTimeoutHeight = 0; // No timeout, implementing MWEB as a core feature of the network from the beginning.
+        consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].nStartHeight = 99999999; // Set to an unreachable block height
+        consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].nTimeoutHeight = 99999999; // Set to the same unreachable block height
 
         consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000000000000000");
         consensus.defaultAssumeValid = uint256S("0x2a8a85a61f33d3d35bb20f1c7c1a311e4a88605ff563fa4a0be2a0844a9a3245"); // 0
