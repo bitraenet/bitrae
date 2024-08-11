@@ -95,8 +95,10 @@ if [[ "$install_binaries" =~ ^[Yy]$ ]]; then
     check_status
     
 # Final completion message    
-    echo_color "0;32" "Bitrae Node install complete. Binaries installed. Run command bitraed to start Node or run bitrae-qt to open GUI wallet, use flag -testnet to run node in TESTNET."
+echo_color "0;32" "Bitrae Node install complete. Binaries installed. Run command \033[1;33m\"bitraed\"\033[0;32m to start Node or run \033[1;33m\"bitrae-qt\"\033[0;32m to open GUI wallet, use flag \033[1;33m\"-testnet\"\033[0;32m to run node in TESTNET."
 else
-    echo_color "0;32" "Bitrae Node install complete. Run command ./bitraed in $INSTALL_DIR/src to start Node or ./bitrae-qt in $INSTALL_DIR/src/qt to open GUI wallet, use flag -testnet to run node in TESTNET."
+    echo_color "0;32" "Bitrae Node install complete. Run command \033[1;33m\"./bitraed\"\033[0;32m in $INSTALL_DIR/src to start Node or \033[1;33m\"./bitrae-qt\"\033[0;32m in $INSTALL_DIR/src/qt to open GUI wallet, use flag \033[1;33m\"-testnet\"\033[0;32m to run node in TESTNET."
 fi
+
+
 
