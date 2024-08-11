@@ -4,11 +4,13 @@ LOGFILE="$HOME/bitrae_install.log"  # Changed to use $HOME
 REPO_URL="https://github.com/bitraenet/bitrae.git"
 INSTALL_DIR="$HOME/bitrae"  # Install in the user's home directory
 
-# Function to print in color
+# Function to print in color and log without color codes
 echo_color() {
     local color=$1
     local message=$2
-    echo -e "\033[${color}m${message}\033[0m" | tee -a "$LOGFILE"
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    echo -e "\033[${color}m${timestamp} - ${message}\033[0m"
+    echo "${timestamp} - ${message}" >> "$LOGFILE"
 }
 
 # Function to check the status of the last executed command
@@ -25,7 +27,7 @@ install_dependencies() {
     local attempt=1
     while [ $attempt -le $max_attempts ]; do
         echo_color "0;34" "Attempt $attempt: Installing dependencies..."
-        sudo apt-get update && sudo apt-get upgrade && sudo apt-get install -y git build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 libssl-dev libevent-dev libboost-system-dev libboost-filesystem-dev libboost-test-dev libboost-thread-dev libfmt-dev libsqlite3-dev libminiupnpc-dev libzmq3-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libqrencode-dev && break
+        sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y git build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 libssl-dev libevent-dev libboost-system-dev libboost-filesystem-dev libboost-test-dev libboost-thread-dev libfmt-dev libsqlite3-dev libminiupnpc-dev libzmq3-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libqrencode-dev && break
         echo_color "0;33" "Attempt $attempt failed. Retrying..."
         sleep 5
         ((attempt++))
@@ -51,7 +53,7 @@ else
 fi
 
 # Change directory to INSTALL_DIR
-echo_color "0;34" "Change directory to INSTALL_DIR"
+echo_color "0;34" "Changing directory to $INSTALL_DIR"
 cd "$INSTALL_DIR"
 check_status
 
