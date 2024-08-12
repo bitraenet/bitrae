@@ -27,7 +27,12 @@ install_dependencies() {
     local attempt=1
     while [ $attempt -le $max_attempts ]; do
         echo_color "0;34" "Attempt $attempt: Installing dependencies..."
-        sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y git build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 libssl-dev libevent-dev libboost-system-dev libboost-filesystem-dev libboost-test-dev libboost-thread-dev libfmt-dev libsqlite3-dev libminiupnpc-dev libzmq3-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libqrencode-dev && break
+        sudo apt-get update 2>> "$LOGFILE"
+        sudo apt-get upgrade -y 2>> "$LOGFILE"
+        sudo apt-get install -y git build-essential libtool autotools-dev automake pkg-config bsdmainutils python3 libssl-dev libevent-dev libboost-system-dev libboost-filesystem-dev libboost-test-dev libboost-thread-dev libfmt-dev libsqlite3-dev libminiupnpc-dev libzmq3-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libqrencode-dev 2>> "$LOGFILE"
+        if [ $? -eq 0 ]; then
+            break
+        fi
         echo_color "0;33" "Attempt $attempt failed. Retrying..."
         sleep 5
         ((attempt++))
@@ -48,23 +53,23 @@ if [ -d "$INSTALL_DIR" ]; then
     echo_color "0;33" "Installation directory already exists. Skipping clone..."
 else
     echo_color "0;34" "Cloning Bitrae Node repository"
-    git clone $REPO_URL $INSTALL_DIR
+    git clone $REPO_URL $INSTALL_DIR 2>> "$LOGFILE"
     check_status
 fi
 
 # Change directory to INSTALL_DIR
 echo_color "0;34" "Changing directory to $INSTALL_DIR"
-cd "$INSTALL_DIR"
+cd "$INSTALL_DIR" 2>> "$LOGFILE"
 check_status
 
 # Install BerkeleyDB
 echo_color "0;34" "Installing BerkeleyDB"
-./contrib/install_db4.sh $(pwd)
+./contrib/install_db4.sh $(pwd) 2>> "$LOGFILE"
 check_status
 
 # Running autogen.sh
 echo_color "0;34" "Preparing build configuration"
-./autogen.sh
+./autogen.sh 2>> "$LOGFILE"
 check_status
 
 # Setting environment variable for BerkeleyDB
@@ -74,31 +79,29 @@ check_status
 
 # Checking environment variables and directory contents
 echo_color "0;34" "Checking environment variables"
-ls "$BDB_PREFIX/lib"
+ls "$BDB_PREFIX/lib" 2>> "$LOGFILE"
 check_status
 
 # Setting Make configuration
 echo_color "0;34" "Setting Make configuration"
-./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
+./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" 2>> "$LOGFILE"
 check_status
 
 # Compile the binary
 echo_color "0;32" "Creating Bitrae binary"
-make
+make 2>> "$LOGFILE"
 check_status
 
 # Prompt user for installing binaries
 read -p "Do you want to install the binaries? (y/n): " install_binaries
 if [[ "$install_binaries" =~ ^[Yy]$ ]]; then
     echo_color "0;34" "Installing binaries"
-    sudo make install
+    sudo make install 2>> "$LOGFILE"
     check_status
     
 # Final completion message    
-echo_color "0;32" "Bitrae Node install complete. Binaries installed. Run command \033[1;33m\"bitraed\"\033[0;32m to start Node or run \033[1;33m\"bitrae-qt\"\033[0;32m to open GUI wallet, use flag \033[1;33m\"-testnet\"\033[0;32m to run node in TESTNET."
+    echo_color "0;32" "Bitrae Node install complete. Binaries installed. Run command \033[1;33m\"bitraed\"\033[0;32m to start Node or run \033[1;33m\"bitrae-qt\"\033[0;32m to open GUI wallet, use flag \033[1;33m\"-testnet\"\033[0;32m to run node in TESTNET."
 else
     echo_color "0;32" "Bitrae Node install complete. Run command \033[1;33m\"./bitraed\"\033[0;32m in $INSTALL_DIR/src to start Node or \033[1;33m\"./bitrae-qt\"\033[0;32m in $INSTALL_DIR/src/qt to open GUI wallet, use flag \033[1;33m\"-testnet\"\033[0;32m to run node in TESTNET."
 fi
-
-
 
