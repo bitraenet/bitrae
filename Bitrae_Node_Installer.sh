@@ -146,7 +146,7 @@ fi
 # Cloning Bitrae Node repository if the directory was deleted or doesn't exist
 if [ ! -d "$INSTALL_DIR" ]; then
     echo_color "0;34" "Cloning Bitrae Node repository"
-    git clone "$REPO_URL" "$INSTALL_DIR" 2>>"$TEMPFILE" &
+    git clone --progress "$REPO_URL" "$INSTALL_DIR" 2>&1 | grep -v '^ ' &
     GIT_PID=$!
     monitor_git_clone $GIT_PID
     check_status
