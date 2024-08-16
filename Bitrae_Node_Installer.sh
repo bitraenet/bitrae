@@ -20,12 +20,14 @@ echo_color() {
 
 # Function to check the status of the last executed command
 check_status() {
-    local last_command=$(history | tail -n 3 | head -n 1)  # Capture the last executed command
-    if [ $? -ne 0 ]; then
-        echo_color "0;31" "Error encountered during: $last_command. See details below and in log file at $LOGFILE. Exiting..."
+    local last_command=$(history | tail -n 3 | head -n 1 | sed 's/^[ ]*[0-9]*[ ]*//') # Capture the last executed command
+    local exit_code=$?
+    if [ $exit_code -ne 0 ]; then
+        echo_color "0;31" "Error: Command '$last_command' exited with status $exit_code."
+        echo_color "0;31" "Hint: This may be caused by network issues, missing dependencies, or permission problems. Check $LOGFILE for details."
         cat "$TEMPFILE" >> "$LOGFILE"  # Append the captured error to the log
         cleanup
-        exit 1
+        exit $exit_code
     fi
     > "$TEMPFILE"  # Clear the temp file for the next command
 }
@@ -86,8 +88,10 @@ check_and_install_dependencies() {
     if [ ${#missing_deps[@]} -gt 0 ]; then
         check_network_connectivity  # Ensure network is active before attempting to install dependencies
         echo_color "0;34" "Installing missing dependencies: ${missing_deps[*]}"
-        sudo apt-get update 2>>"$TEMPFILE" || check_status
-        sudo apt-get install -y "${missing_deps[@]}" 2>>"$TEMPFILE" || check_status
+        sudo apt-get update 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to update package list. Please check your network connection and repository settings."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
+        check_status
+        sudo apt-get install -y "${missing_deps[@]}" 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to install dependencies: ${missing_deps[*]}. Ensure you have the correct package sources."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
+        check_status
     else
         echo_color "0;32" "All dependencies are already installed."
     fi
@@ -118,7 +122,7 @@ prompt_for_deletion() {
         echo -ne "\r\033[0;33mCountdown: $i seconds remaining... Press 'K' to keep the folder. \033[0m"
         read -t 1 -n 1 -r key
         if [[ $key =~ ^[Kk]$ ]]; then
-            echo -e "\n\033[0;33mKeeping the existing folder $INSTALL_DIR Stopping the script to allow for backups or other actions.\033[0m"
+            echo -e "\n\033[0;33mKeeping the existing folder $INSTALL_DIR. Stopping the script to allow for backups or other actions.\033[0m"
             echo_color "0;33" "User chose to keep the existing folder. Script stopped."
             cleanup
             exit 0
@@ -127,6 +131,7 @@ prompt_for_deletion() {
 
     echo -e "\n\033[0;31mAutomatically proceeding with deletion...\033[0m"
     rm -rf "$INSTALL_DIR"
+    check_status
     echo_color "0;31" "Installation directory $INSTALL_DIR deleted automatically after countdown."
 }
 
@@ -161,17 +166,17 @@ fi
 
 # Change directory to INSTALL_DIR
 echo_color "0;34" "Changing directory to $INSTALL_DIR"
-cd "$INSTALL_DIR" 2>>"$TEMPFILE"
+cd "$INSTALL_DIR" 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to change directory to $INSTALL_DIR. Ensure the directory exists."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
 check_status
 
 # Install BerkeleyDB
 echo_color "0;34" "Installing BerkeleyDB"
-./contrib/install_db4.sh "$(pwd)" 2>>"$TEMPFILE"
+./contrib/install_db4.sh "$(pwd)" 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to install BerkeleyDB."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
 check_status
 
 # Running autogen.sh
 echo_color "0;34" "Preparing build configuration"
-./autogen.sh 2>>"$TEMPFILE"
+./autogen.sh 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to run autogen.sh. Check $LOGFILE for details."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
 check_status
 
 # Setting environment variable for BerkeleyDB
@@ -181,24 +186,24 @@ check_status
 
 # Checking environment variables and directory contents
 echo_color "0;34" "Checking environment variables"
-ls "$BDB_PREFIX/lib" 2>>"$TEMPFILE"
+ls "$BDB_PREFIX/lib" 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to check BerkeleyDB environment. Check $LOGFILE for details."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
 check_status
 
 # Setting Make configuration
 echo_color "0;34" "Setting Make configuration"
-./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" 2>>"$TEMPFILE"
+./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to configure the project. Check for missing dependencies or incompatible options in $LOGFILE."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
 check_status
 
 # Compile the binary
 echo_color "0;32" "Creating Bitrae binary"
-make 2>>"$TEMPFILE"
+make 2>>"$TEMPFILE" || { echo_color "0;31" "Compilation error: 'make' failed. Check the compiler output in $LOGFILE."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
 check_status
 
 # Prompt user for installing binaries
 read -p "Do you want to install the binaries? (y/n): " install_binaries
 if [[ "$install_binaries" =~ ^[Yy]$ ]]; then
     echo_color "0;34" "Installing binaries"
-    sudo make install 2>>"$TEMPFILE"
+    sudo make install 2>>"$TEMPFILE" || { echo_color "0;31" "Installation error: Failed to install the compiled executables. Check $LOGFILE for details."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
     check_status
     
     # Final completion message    
@@ -212,4 +217,3 @@ trap - SIGINT
 
 # Clean up temporary file
 rm -f "$TEMPFILE"
-
