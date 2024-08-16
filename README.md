@@ -55,10 +55,10 @@ To set up a full node and join the Bitrae network, please use the `Bitrae_Node_I
 
 
 
-**Note**: By default, the script installs the full node with the GUI wallet. If you prefer a non-GUI version, you need to edit line 189 of the script. Add the `--without-gui` option at the end of the line, before 2>>"$TEMPFILE", or copy and paste the following:
+**Note**: By default, the script installs the full node with the GUI wallet. If you prefer a non-GUI version, you need to edit line 194 of the script. Add the `--without-gui` option just before the '2>>"$TEMPFILE"' part of the line. The modified line should look like this:
 
 ```
-./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --without-gui 2>>"$TEMPFILE"
+./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --without-gui 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to configure the project. Check for missing dependencies or incompatible options in $LOGFILE."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
 ```
 
 Feel free to modify other options in the script according to your preferences.
