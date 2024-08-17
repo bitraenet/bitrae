@@ -88,9 +88,9 @@ check_and_install_dependencies() {
     if [ ${#missing_deps[@]} -gt 0 ]; then
         check_network_connectivity  # Ensure network is active before attempting to install dependencies
         echo_color "0;34" "Installing missing dependencies: ${missing_deps[*]}"
-        sudo apt-get update 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to update package list. Please check your network connection and repository settings."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
+        sudo apt-get update 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to update package list. Please check your network connection and repository settings. Check $LOGFILE for details."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
         check_status
-        sudo apt-get install -y "${missing_deps[@]}" 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to install dependencies: ${missing_deps[*]}. Ensure you have the correct package sources."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
+        sudo apt-get install -y "${missing_deps[@]}" 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to install dependencies: ${missing_deps[*]}. Ensure you have the correct package sources. Check $LOGFILE for details."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
         check_status
     else
         echo_color "0;32" "All dependencies are already installed."
@@ -166,12 +166,12 @@ fi
 
 # Change directory to INSTALL_DIR
 echo_color "0;34" "Changing directory to $INSTALL_DIR"
-cd "$INSTALL_DIR" 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to change directory to $INSTALL_DIR. Ensure the directory exists."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
+cd "$INSTALL_DIR" 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to change directory to $INSTALL_DIR. Ensure the directory exists. Check $LOGFILE for details."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
 check_status
 
 # Install BerkeleyDB
 echo_color "0;34" "Installing BerkeleyDB"
-./contrib/install_db4.sh "$(pwd)" 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to install BerkeleyDB."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
+./contrib/install_db4.sh "$(pwd)" 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to install BerkeleyDB. Check $LOGFILE for details."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }
 check_status
 
 # Running autogen.sh
