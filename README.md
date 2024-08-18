@@ -39,7 +39,7 @@ Bitrae is a testament to the power of community-driven development. Created with
 
 ### Installing a Full Node
 
-To set up a full node and join the Bitrae network, please use the `Bitrae_Node_Installer.sh` script available in our repository. This script simplifies the installation process, especially for users without prior experience, and is configured to install the node with non-GUI options by default.
+To set up a full node and join the Bitrae network, please use the `Bitrae_Node_Installer.sh` script available in our repository. This script simplifies the installation process, especially for users without prior experience, and is configured to install the node with GUI options by default.
 
 **Installation Steps:**
 
