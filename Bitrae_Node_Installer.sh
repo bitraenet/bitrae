@@ -207,7 +207,7 @@ if [[ "$install_binaries" =~ ^[Yy]$ ]]; then
     check_status
     
     # Final completion message    
-echo_color "38;2;0;255;0" "Bitrae Node install complete. Binaries installed. Run command \033[38;2;255;0;255m\"bitraed\"\033[38;2;0;255;0m to start the node or run \033[38;2;255;0;255m\"bitrae-qt\"\033[38;2;0;255;0m to open GUI wallet, use the \033[38;2;255;0;255m\"-testnet\"\033[38;2;0;255;0m option to run the node in TESTNET."
+    echo_color "38;2;0;255;0" "Bitrae Node install complete. Binaries installed. Run command \033[38;2;255;0;255m\"bitraed\"\033[38;2;0;255;0m to start the node or run \033[38;2;255;0;255m\"bitrae-qt\"\033[38;2;0;255;0m to open GUI wallet, use the \033[38;2;255;0;255m\"-testnet\"\033[38;2;0;255;0m option to run the node in TESTNET."
 else
     echo_color "38;2;0;255;0" "Bitrae Node install complete. Run command \033[38;2;255;0;255m\"./bitraed\"\033[38;2;0;255;0m in $INSTALL_DIR/src to start the node or \033[38;2;255;0;255m\"./bitrae-qt\"\033[38;2;0;255;0m in $INSTALL_DIR/src/qt to open the GUI wallet, use the \033[38;2;255;0;255m\"-testnet\"\033[38;2;0;255;0m option to run the node in TESTNET."
 fi
