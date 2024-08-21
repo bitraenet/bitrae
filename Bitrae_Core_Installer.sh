@@ -132,7 +132,7 @@ prompt_for_deletion() {
     echo -e "\n\033[38;2;255;0;0mAutomatically proceeding with deletion...\033[0m"
     rm -rf "$INSTALL_DIR"
     check_status
-    echo_color "38;2;255;0;255" "Installation directory $INSTALL_DIR deleted automatically after countdown."
+    echo_color "38;2;0;255;0" "Installation directory $INSTALL_DIR deleted automatically after countdown."
 }
 
 echo_color "38;2;0;255;0" "Starting Bitrae Core installation..."
