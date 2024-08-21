@@ -35,27 +35,27 @@ Welcome to the official documentation for Bitrae, the cryptocurrency designed by
 
 Bitrae is a testament to the power of community-driven development. Created with no pre-mine, every Bitrae coin in circulation is the result of the hard work and dedication of our miners. This approach guarantees a fair start and equitable opportunity for all participants, reinforcing our vision of a decentralized and accessible cryptocurrency.
 
-## Getting Started with Bitrae
+## Getting Started with Bitrae Core
 
 ### Installing a Full Node
 
-To set up a full node and join the Bitrae network, please use the `Bitrae_Node_Installer.sh` script available in our repository. This script simplifies the installation process, especially for users without prior experience, and is configured to install the node with GUI options by default.
+To set up a full node and join the Bitrae network, please use the `Bitrae_Core_Installer.sh` script available in our repository. This script simplifies the installation process, especially for users without prior experience, and is configured to install Bitrae Core with GUI options by default.
 
 **Installation Steps:**
 
-1. Download the `Bitrae_Node_Installer.sh` script from our repository with the following command:
+1. Download the `Bitrae_Core_Installer.sh` script from our repository with the following command:
     ```sh
-    wget https://raw.githubusercontent.com/bitraenet/bitrae/main/Bitrae_Node_Installer.sh
+    wget https://raw.githubusercontent.com/bitraenet/bitrae/main/Bitrae_Core_Installer.sh
     ```
 2. Run the script with the command:
     ```sh
-    bash Bitrae_Node_Installer.sh
+    bash Bitrae_Core_Installer.sh
     ```
 3. Follow the on-screen instructions to complete the installation.
 
 
 
-**Note**: By default, the script installs the full node with the GUI wallet. If you prefer a non-GUI version, you need to edit line 194 of the script. Add the `--without-gui` option just before the `2>>"$TEMPFILE"` part of the line. The modified line should look like this:
+**Note**: By default, the script installs Bitrae Core with the GUI wallet. If you prefer a non-GUI version, you need to edit line 194 of the script. Add the `--without-gui` option just before the `2>>"$TEMPFILE"` part of the line. The modified line should look like this:
 
 ```
 ./configure BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include" --without-gui 2>>"$TEMPFILE" || { echo_color "0;31" "Error: Failed to configure the project. Check for missing dependencies or incompatible options in $LOGFILE."; cat "$TEMPFILE" >> "$LOGFILE"; exit 1; }

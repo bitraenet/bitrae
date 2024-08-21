@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOGFILE="$HOME/bitrae_node_install.log"
+LOGFILE="$HOME/bitrae_core_install.log"
 REPO_URL="https://github.com/bitraenet/bitrae.git"
 INSTALL_DIR="$HOME/bitrae"
 TEMPFILE=$(mktemp)  # Temporary file to capture stderr
@@ -135,7 +135,7 @@ prompt_for_deletion() {
     echo_color "38;2;255;0;255" "Installation directory $INSTALL_DIR deleted automatically after countdown."
 }
 
-echo_color "38;2;0;255;0" "Starting Bitrae Node installation..."
+echo_color "38;2;0;255;0" "Starting Bitrae Core installation..."
 
 # Install dependencies
 check_and_install_dependencies
@@ -148,9 +148,9 @@ if [ -d "$INSTALL_DIR" ]; then
     prompt_for_deletion
 fi
 
-# Cloning Bitrae Node repository if the directory was deleted or doesn't exist
+# Cloning Bitrae Core repository if the directory was deleted or doesn't exist
 if [ ! -d "$INSTALL_DIR" ]; then
-    echo_color "38;2;255;0;255" "Cloning Bitrae Node repository"
+    echo_color "38;2;255;0;255" "Cloning Bitrae Core repository"
     git clone --progress "$REPO_URL" "$INSTALL_DIR" 2>&1 | grep -v '^ ' &
     GIT_PID=$!
     monitor_git_clone $GIT_PID
@@ -207,9 +207,9 @@ if [[ "$install_binaries" =~ ^[Yy]$ ]]; then
     check_status
     
     # Final completion message    
-    echo_color "38;2;0;255;0" "Bitrae Node install complete. Binaries installed. Run command \033[38;2;255;0;255m\"bitraed\"\033[38;2;0;255;0m to start the node or run \033[38;2;255;0;255m\"bitrae-qt\"\033[38;2;0;255;0m to open GUI wallet, use the \033[38;2;255;0;255m\"-testnet\"\033[38;2;0;255;0m option to run the node in TESTNET."
+    echo_color "38;2;0;255;0" "Bitrae Core installation complete. Binaries installed. Run the command \033[38;2;255;0;255m\"bitraed\"\033[38;2;0;255;0m to start the daemon, or \033[38;2;255;0;255m\"bitrae-qt\"\033[38;2;0;255;0m to open the GUI wallet. Use the \033[38;2;255;0;255m\"-testnet\"\033[38;2;0;255;0m option to run the daemon in TESTNET mode."
 else
-    echo_color "38;2;0;255;0" "Bitrae Node install complete. Run command \033[38;2;255;0;255m\"./bitraed\"\033[38;2;0;255;0m in $INSTALL_DIR/src to start the node or \033[38;2;255;0;255m\"./bitrae-qt\"\033[38;2;0;255;0m in $INSTALL_DIR/src/qt to open the GUI wallet, use the \033[38;2;255;0;255m\"-testnet\"\033[38;2;0;255;0m option to run the node in TESTNET."
+    echo_color "38;2;0;255;0" "Bitrae Core installation complete. Run the command \033[38;2;255;0;255m\"./bitraed\"\033[38;2;0;255;0m in $INSTALL_DIR/src to start the daemon, or \033[38;2;255;0;255m\"./bitrae-qt\"\033[38;2;0;255;0m in $INSTALL_DIR/src/qt to open the GUI wallet. Use the \033[38;2;255;0;255m\"-testnet\"\033[38;2;0;255;0m option to run the daemon in TESTNET mode."
 fi
 
 # Clear the trap to avoid inadvertent triggering
