@@ -106,10 +106,10 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_MWEB].nTimeoutHeight = 99999999; // Set to the same unreachable block height
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000000000000000");
+        consensus.nMinimumChainWork = uint256S("0x000000000000000000000000000000000000000000000000019f3a3f3ed7e0ee");
         
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0xd0ea3e7f3b5322bb1c774d57fecac4f145cd2ddba2b64015c9502f40f542b10f"); // 0
+        consensus.defaultAssumeValid = uint256S("0x1ad904130d3ce0e9cf62369107d1689112c129db1383796691144d065a866abc"); // Block 350000
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
