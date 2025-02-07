@@ -159,14 +159,31 @@ public:
         checkpointData = {
             {
                 {  0, uint256S("0xd0ea3e7f3b5322bb1c774d57fecac4f145cd2ddba2b64015c9502f40f542b10f")},
+                {1000, uint256S("0x4203a542ff56022e1717901eb8574bb048b7539f2af7b1b956b3d0b775572437")},
+                {10000, uint256S("0xb6c0a4452354764f0ac6a957bacd0daf2a7a4a5dde6289d7183e0c1b5885ee16")},
+                {20000, uint256S("0xf4a4b4507dd6d5b08135e110249a15817fc112d1db9ef81bf1cc7a331f49e752")},
+                {50000, uint256S("0x76afb0471020fef8e5887a7669d06bd95093c45f85678c42556149ed91470a48")},
+                {70000, uint256S("0x6f7f6e4215a7371593dbfa66269811347cfe6d129c39e0b9d0cf0a63857d1845")},
+                {100000, uint256S("0x1048f4ba25f16120133428a7febcc2d6b0892917f526fcaecc9e69d50f952139")},
+                {120000, uint256S("0x7654c07fe285cf05b3d7b4802e62b8f2bf17868fd37425b1efd23de428e9723b")},
+                {150000, uint256S("0x1022538a7d0505a0b81c1a64112a9756ab6a6d9ff5a9123f0752a67ca9b1fc72")},
+                {170000, uint256S("0xa91a5100ff5ec308f3fce9de65d923d727965b3bb5232c299aa6a28dfafa6a74")},
+                {200000, uint256S("0xcb28d70566952d744010ca7faa120c2c4fa0606d3ff5a2a75f900b2542aebb61")},
+                {220000, uint256S("0xb7e78b72e3df8e3cd46be5b47bd223c82c92eba53bd43070ce2dfd508c55095b")},
+                {250000, uint256S("0xa4e11747b8f820220a4d3254201b69f88038d7f1dab92d277151c04d4a327066")},
+                {270000, uint256S("0x049f55bcfd90d5144ad199a1b2157b0e797a18da8de61224be6d293526ad1d71")},
+                {300000, uint256S("0x9715cc464fe3b66a3a89c0b578457453c744d05d24f700f5da18e5e58b517b90")},
+                {320000, uint256S("0x4b653c324b9b93a6fb7dbb16eaea8cf62cbd99d20a27a5572066e5d73e4dce7e")},
+                {350000, uint256S("0x1ad904130d3ce0e9cf62369107d1689112c129db1383796691144d065a866abc")},
+                {353328, uint256S("0x94b57e37c9be44f684ddc2bc91e1522522625764b7a5f827d32c068ae7373a0c")},
             }
         };
 
         chainTxData = ChainTxData{
             // Data from rpc: getchaintxstats
-            /* nTime    */ 1712059200,
-            /* nTxCount */ 0,
-            /* dTxRate  */ 1.0
+            /* nTime    */ 1738890821,
+            /* nTxCount */ 368868,
+            /* dTxRate  */ 0.02752179552655009
         };
     }
 };
