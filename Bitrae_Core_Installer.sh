@@ -78,7 +78,7 @@ monitor_git_clone() {
 
 # Function to check and install missing dependencies
 check_and_install_dependencies() {
-    local dependencies=("git" "build-essential" "libtool" "autotools-dev" "automake" "pkg-config" "bsdmainutils" "python3" "libssl-dev" "libevent-dev" "libboost-system-dev" "libboost-filesystem-dev" "libboost-test-dev" "libboost-thread-dev" "libfmt-dev" "libsqlite3-dev" "libminiupnpc-dev" "libzmq3-dev" "libqt5gui5" "libqt5core5a" "libqt5dbus5" "qttools5-dev" "qttools5-dev-tools" "libqrencode-dev")
+    local dependencies=("git" "jq" "build-essential" "libtool" "autotools-dev" "automake" "pkg-config" "bsdmainutils" "curl" "python3" "libssl-dev" "libevent-dev" "libboost-system-dev" "libboost-filesystem-dev" "libboost-test-dev" "libboost-thread-dev" "libfmt-dev" "libsqlite3-dev" "libminiupnpc-dev" "libzmq3-dev" "libqt5gui5" "libqt5core5a" "libqt5dbus5" "qttools5-dev" "qttools5-dev-tools" "libqrencode-dev")
     local missing_deps=()
     for dep in "${dependencies[@]}"; do
         if ! dpkg -s $dep >/dev/null 2>&1; then
@@ -148,21 +148,64 @@ if [ -d "$INSTALL_DIR" ]; then
     prompt_for_deletion
 fi
 
-# Cloning Bitrae Core repository if the directory was deleted or doesn't exist
-if [ ! -d "$INSTALL_DIR" ]; then
-    echo_color "38;2;255;0;255" "Cloning Bitrae Core repository"
-    git clone --progress "$REPO_URL" "$INSTALL_DIR" 2>&1 | grep -v '^ ' &
-    GIT_PID=$!
-    monitor_git_clone $GIT_PID
-    check_status
+# Ask the user whether to install the latest stable release or the main branch
+echo_color "38;2;255;255;0" "Would you like to install the latest stable release or the main development branch?"
+echo_color "38;2;255;255;0" "Press 'R' within 8 seconds for the latest release (recommended), or 'M' for the main branch (for developers)."
 
-    # Explicitly check if the directory was successfully created
-    if [ ! -d "$INSTALL_DIR" ]; then
-        echo_color "38;2;255;0;0" "Failed to clone the repository. The installation directory does not exist. Exiting."
-        cleanup
-        exit 1
+# Countdown timer loop
+for i in {8..1}; do
+    echo -ne "\r\033[38;2;255;255;0mCountdown: $i seconds remaining...\033[0m"
+    read -t 1 -n 1 -r user_choice && break  # Capture input if entered
+done
+echo ""  # Move to a new line after countdown
+
+# Determine the branch based on user choice
+if [[ "$user_choice" =~ ^[Mm]$ ]]; then
+    BRANCH="main"
+    echo_color "38;2;255;0;255" "Cloning Bitrae Core repository from the main branch."
+elif [[ "$user_choice" =~ ^[Rr]$ ]]; then
+    echo_color "38;2;255;0;255" "Fetching latest release tag for Bitrae Core..."
+    LATEST_RELEASE_TAG=$(curl -s "https://api.github.com/repos/bitraenet/bitrae/releases/latest" | jq -r '.tag_name')
+
+    if [[ "$LATEST_RELEASE_TAG" == "null" || -z "$LATEST_RELEASE_TAG" ]]; then
+        echo_color "38;2;255;0;0" "Error: Could not retrieve the latest release tag. Falling back to the main branch."
+        BRANCH="main"
+    else
+        BRANCH="$LATEST_RELEASE_TAG"
     fi
+
+    echo_color "38;2;255;0;255" "Cloning Bitrae Core repository (release $BRANCH)"
+else
+    echo_color "38;2;255;255;0" "No input received. Defaulting to the latest stable release..."
+    echo_color "38;2;255;0;255" "Fetching latest release tag for Bitrae Core..."
+    LATEST_RELEASE_TAG=$(curl -s "https://api.github.com/repos/bitraenet/bitrae/releases/latest" | jq -r '.tag_name')
+
+    if [[ "$LATEST_RELEASE_TAG" == "null" || -z "$LATEST_RELEASE_TAG" ]]; then
+        echo_color "38;2;255;0;0" "Error: Could not retrieve the latest release tag. Falling back to the main branch."
+        BRANCH="main"
+    else
+        BRANCH="$LATEST_RELEASE_TAG"
+    fi
+
+    echo_color "38;2;255;0;255" "Cloning Bitrae Core repository (release $BRANCH)"
 fi
+
+# Perform the clone operation
+git clone --progress --branch "$BRANCH" "$REPO_URL" "$INSTALL_DIR" 2>&1 | grep -v '^ ' &
+
+GIT_PID=$!
+monitor_git_clone $GIT_PID
+check_status
+
+# Explicitly check if the directory was successfully created
+if [ ! -d "$INSTALL_DIR" ]; then
+    echo_color "38;2;255;0;0" "Failed to clone the repository. The installation directory does not exist. Exiting."
+    cleanup
+    exit 1
+fi
+
+# Show progress message
+echo_color "38;2;0;255;0" "Repository cloned successfully. Proceeding with installation..."
 
 # Change directory to INSTALL_DIR
 echo_color "38;2;255;0;255" "Changing directory to $INSTALL_DIR"
