@@ -87,6 +87,14 @@ public:
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 0.875 * 24 * 60 * 60; // 21 Hours
         consensus.nPowTargetSpacing = 0.625 * 60; // Bitrae: 37 Seconds
+        
+        // Deployment of LWMA v3 DAA
+        // Window size and activation heights.
+        // On MAINNET we use nLWMAHeight; nLWMAHeightTestnet is ignored here.
+        consensus.nLWMAWindow = 90;
+        consensus.nLWMAHeight = 2000000000;      // Mainnet: TBD
+        consensus.nLWMAHeightTestnet = 200;      // // Unused on mainnet (kept for struct completeness)
+        
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 6129; // 75% of 8172
@@ -214,6 +222,13 @@ public:
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 0.875 * 24 * 60 * 60; // 21 Hours
         consensus.nPowTargetSpacing = 0.625 * 60; // Bitrae: 37 Seconds
+        
+        // Deployment of LWMA v3 DAA (activate quickly on testnet)
+        // TESTNET activates via nLWMAHeightTestnet; nLWMAHeight is unused on testnet.
+        consensus.nLWMAWindow = 90;
+        consensus.nLWMAHeightTestnet = 200;      // Testnet activation height
+        consensus.nLWMAHeight = 2000000000;      // Unused on testnet
+        
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 6129; // 75% for testchains
@@ -310,8 +325,16 @@ public:
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 0.875 * 24 * 60 * 60; // 21 Hours
         consensus.nPowTargetSpacing = 0.625 * 60; // Bitrae: 37 Seconds
+        
+        // Deployment of LWMA v3 DAA
+        // REGTEST uses the "testnet-like" activation field (nLWMAHeightTestnet) for immediate testing.
+        // Smaller window speeds up feedback during local tests.
+        consensus.nLWMAWindow = 60;              // Faster window for rapid testing
+        consensus.nLWMAHeightTestnet = 1;        // Activate LWMA at height 1 on regtest
+        consensus.nLWMAHeight = 2000000000;      // Unused on regtest
+        
         consensus.fPowAllowMinDifficultyBlocks = true;
-        consensus.fPowNoRetargeting = true;
+        consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 432; // 75% for testchains
         consensus.nMinerConfirmationWindow = 576; // Faster than normal for regtest (576 instead of 8064)
 
