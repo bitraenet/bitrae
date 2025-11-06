@@ -40,7 +40,7 @@ static unsigned int GetNextWorkRequired_LWMA(const CBlockIndex* pindexLast,
     // sum_{i=1..N} i * solvetime_i (newest block has largest weight i=N)
     int64_t sumWeightedSolveTimes = 0;
     const int64_t sumWeights = (int64_t)N * (N + 1) / 2; // N(N+1)/2
-    aarith_uint256 avgTarget = arith_uint256(); // zero-init
+    arith_uint256 avgTarget = arith_uint256(); // zero-init
     // or simply: arith_uint256 avgTarget; avgTarget = 0;
 
     const CBlockIndex* block = pindexLast;
