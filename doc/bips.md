@@ -56,3 +56,11 @@ LIPs implemented by Bitrae Core (up-to-date up to v0.21.3)
 * [`LIP003`](https://github.com/bitraenet/lips/blob/master/lip-0003.mediawiki): Opt-in MimbleWimble through Extension Blocks.
 * [`LIP004`](https://github.com/bitraenet/lips/blob/master/lip-0004.mediawiki): One sided MimbleWimble transactions without needing to build a transaction interactively with the receiving party. 
 * [`LIP006`](https://github.com/bitraenet/lips/blob/c01068d06136fb21bf35fd6dac2977de60057714/LIP-0006.mediawiki): New p2p messages for supporting light-client syncing of MWEB components.
+
+
+------------------
+
+BRIPs implemented by Bitrae Core (up-to-date up to **v0.3.0**)
+
+* [`BRIP-001`](https://github.com/bitraenet/brips/blob/master/brip-0001.mediawiki):
+  LWMA v3 Difficulty Adjustment Algorithm (Zawy12 adaptation). Introduces a per-block, linearly weighted difficulty algorithm to mitigate hashrate oscillation attacks and stabilize block times.
