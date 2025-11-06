@@ -1,0 +1,139 @@
+<pre>
+  BRIP: 0001
+  Title: LWMA v3 Difficulty Adjustment Algorithm
+  Author: Bitrae Core Developers
+  Status: Draft
+  Type: Consensus
+  Created: 2025-11-06
+  License: MIT
+</pre>
+
+= Abstract =
+
+This document specifies the adoption of the **Linear Weighted Moving Average (LWMA v3)** difficulty adjustment algorithm for Bitrae.  
+Developed by Zawy12, LWMA v3 replaces the legacy periodic retargeting system with a per-block, linearly weighted difficulty calculation.  
+This upgrade provides faster and more stable response to hashrate fluctuations, preventing difficulty “sawtooth” oscillations that destabilize block timing and miner rewards.
+
+= Motivation =
+
+Bitrae’s legacy difficulty adjustment was inherited from Litecoin’s periodic retargeting scheme.  
+While functional, that method adjusts difficulty only at fixed intervals, making it slow to react to large and sudden hashrate changes.  
+This causes oscillations where blocks are mined too quickly after a difficulty drop and then too slowly once difficulty rises again.
+
+Such behavior becomes exploitable in low-hash environments or during **hashrate oscillation attacks**, where miners enter and exit the network to manipulate difficulty and gain disproportionate rewards.
+
+Implementing **LWMA v3** ensures Bitrae’s chain maintains consistent block times and fair distribution of rewards, even during major hashpower fluctuations.
+
+= Specification =
+
+LWMA v3 computes the next target per block using a weighted average of recent block solve times.  
+Each block’s contribution is weighted linearly, giving more influence to newer blocks.  
+This allows the difficulty to adapt proportionally and smoothly to real-time network hashrate changes.
+
+Let:
+
+* **T** = target block time (seconds)  
+* **N** = averaging window size (number of blocks)  
+* **tᵢ** = solve time between block *i* and *i−1*  
+* **wᵢ** = weight = i (newer blocks receive higher weight)  
+* **targetᵢ** = difficulty target from block *i*
+
+Then:
+
+<math>
+adjusted\_time = \sum_{i=1}^{N} w_i \cdot clamp(t_i, -6T, 6T)
+</math>
+
+<math>
+avg\_target = \frac{1}{N} \sum_{i=1}^{N} target_i
+</math>
+
+<math>
+k = T \cdot \sum_{i=1}^{N} i = T \cdot \frac{N(N+1)}{2}
+</math>
+
+<math>
+next\_target = avg\_target \cdot \frac{adjusted\_time}{k}
+</math>
+
+The final target is bounded by the network’s PoW limit.
+
+Timestamp differences are **clamped** to ±6×T to resist miner manipulation via timestamp fraud.
+
+Reference: [https://github.com/zawy12/difficulty-algorithms Zawy12 Difficulty Algorithms Repository]
+
+= Activation Parameters =
+
+{| class="wikitable"
+! Network !! LWMA Activation Height !! Window Size (N) !! Target Spacing (T) !! Retarget Behavior
+|-
+| Mainnet || TBD (placeholder: 2000000000) || 90 blocks || 37 seconds || LWMA active post-height
+|-
+| Testnet || 1 || 90 blocks || 37 seconds || Immediate activation
+|-
+| Regtest || 1 || 60 blocks || 37 seconds || Immediate activation
+|}
+
+* Pre-activation: legacy periodic difficulty retarget logic retained.  
+* Post-activation: per-block LWMA calculation active.
+
+= Reference Implementation =
+
+=== Source Files Modified ===
+
+* `src/pow.cpp`  
+* `src/consensus/params.h`  
+* `src/chainparams.cpp`
+
+=== pow.cpp ===
+Implements the new LWMA calculation function:
+```cpp
+static unsigned int GetNextWorkRequired_LWMA(const CBlockIndex* pindexLast,
+                                             const CBlockHeader* /*pblock*/,
+                                             const Consensus::Params& params)
+```
+Replaces periodic retarget logic after `nLWMAHeight` activation height.  
+Preserves the legacy code path for pre-activation blocks.
+
+=== params.h ===
+Adds new consensus fields:
+```cpp
+int nLWMAWindow;
+int nLWMAHeight;
+int nLWMAHeightTestnet;
+```
+
+=== chainparams.cpp ===
+Configures per-network activation parameters:
+```cpp
+consensus.nLWMAWindow = 90;
+consensus.nLWMAHeight = 120000;
+consensus.nLWMAHeightTestnet = 1;
+```
+
+= Backward Compatibility =
+
+The legacy difficulty system remains active for all blocks below the activation height.  
+Nodes running older versions will diverge from the upgraded chain after activation.  
+This is a **consensus-breaking change** and requires all miners, wallets, and nodes to upgrade prior to activation.
+
+Testnet and regtest can be used to verify behavior and compatibility before mainnet activation.
+
+= Rationale & Benefits =
+
+The LWMA v3 algorithm offers the following key benefits for Bitrae:
+
+* **Faster Response:** Adjusts difficulty per block instead of every interval.  
+* **Stability:** Smooths block spacing and eliminates “sawtooth” oscillations.  
+* **Attack Resistance:** Reduces the advantage of oscillation and timestamp attacks.  
+* **Fairer Mining:** Keeps network difficulty aligned with actual hashrate.  
+* **Proven Track Record:** Used successfully by multiple production blockchains (e.g., Monacoin, Bitcoin Gold, Snowgem).
+
+These improvements strengthen Bitrae’s blockchain security and consistency, while maintaining backward compatibility before activation.
+
+= License =
+
+This document and its reference implementation are released under the **MIT License**, consistent with Bitrae Core and Bitcoin Core licensing terms.
+
+----
+*Based on research by Zawy12 (LWMA v3). Adapted and integrated by the Bitrae Core Developers (2025).*
