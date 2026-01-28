@@ -9,6 +9,7 @@
 
 #include <uint256.h>
 #include <limits>
+#include <vector>
 
 namespace Consensus {
 
@@ -90,12 +91,13 @@ struct Params {
     int64_t nPowTargetSpacing;
     int64_t nPowTargetTimespan;
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
-    
+
     // LWMA v3 parameters
-    int nLWMAWindow;        // e.g. 90 (set per-network in chainparams.cpp)
-    int nLWMAHeight;        // mainnet activation height
-    int nLWMAHeightTestnet; // testnet/regtest activation height
-    
+    // Defaults ensure these are never uninitialised even if a new network forgets to set them.
+    int nLWMAWindow{0};                                   // e.g. 90 (set per-network in chainparams.cpp)
+    int nLWMAHeight{std::numeric_limits<int>::max()};      // mainnet activation height (disabled by default)
+    int nLWMAHeightTestnet{std::numeric_limits<int>::max()}; // testnet/regtest activation height (disabled by default)
+
     /** The best chain should have at least this much work */
     uint256 nMinimumChainWork;
     /** By default assume that the signatures in ancestors of this block are valid */
@@ -111,3 +113,4 @@ struct Params {
 } // namespace Consensus
 
 #endif // BITCOIN_CONSENSUS_PARAMS_H
+
