@@ -85,8 +85,8 @@ public:
         consensus.SegwitHeight = 0; // Activates Segregated Witness at block 0, fixing transaction malleability and increasing block capacity.
         consensus.MinBIP9WarningHeight = 9216; // Sets minimum height for warning of BIP9 soft forks which might activate soon.
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 0.875 * 24 * 60 * 60; // 21 Hours
-        consensus.nPowTargetSpacing = 0.625 * 60; // Bitrae: 37 Seconds
+        consensus.nPowTargetTimespan = 21 * 60 * 60; // 21 Hours (75600 seconds)
+        consensus.nPowTargetSpacing  = 37;           // Bitrae: 37 Seconds
         
         // Deployment of LWMA v3 DAA
         // Window size and activation heights.
@@ -220,8 +220,8 @@ public:
         consensus.SegwitHeight = 0; // Activates Segregated Witness at block 0, fixing transaction malleability and increasing block capacity.
         consensus.MinBIP9WarningHeight = 9216; // Sets minimum height for warning of BIP9 soft forks which might activate soon.
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 0.875 * 24 * 60 * 60; // 21 Hours
-        consensus.nPowTargetSpacing = 0.625 * 60; // Bitrae: 37 Seconds
+        consensus.nPowTargetTimespan = 21 * 60 * 60; // 21 Hours (75600 seconds)
+        consensus.nPowTargetSpacing  = 37;           // Bitrae: 37 Seconds
         
         // Deployment of LWMA v3 DAA (activate quickly on testnet)
         // TESTNET activates via nLWMAHeightTestnet; nLWMAHeight is unused on testnet.
@@ -323,8 +323,8 @@ public:
         consensus.SegwitHeight = 0; // SEGWIT is always activated on regtest unless overridden
         consensus.MinBIP9WarningHeight = 0;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 0.875 * 24 * 60 * 60; // 21 Hours
-        consensus.nPowTargetSpacing = 0.625 * 60; // Bitrae: 37 Seconds
+        consensus.nPowTargetTimespan = 21 * 60 * 60; // 21 Hours (75600 seconds)
+        consensus.nPowTargetSpacing  = 37;          // Bitrae: 37 Seconds
         
         // Deployment of LWMA v3 DAA
         // REGTEST uses the "testnet-like" activation field (nLWMAHeightTestnet) for immediate testing.
