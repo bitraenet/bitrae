@@ -20,6 +20,10 @@
 // - Average targets across the same window
 // - Activation is height-gated; legacy path remains pre-fork
 // - Based on Zawy’s LWMA v3 notes: https://github.com/zawy12/difficulty-algorithms
+//
+// Bitrae additions:
+// - Per-block adjustment clamp (default 4x) to prevent abrupt difficulty swings (all networks)
+// - Preserve testnet/regtest min-difficulty "late block" rule even after LWMA activates
 // ---------------------------------------------------------------
 static unsigned int GetNextWorkRequired_LWMA(const CBlockIndex* pindexLast,
                                              const CBlockHeader* /*pblock*/,
@@ -28,12 +32,14 @@ static unsigned int GetNextWorkRequired_LWMA(const CBlockIndex* pindexLast,
     assert(pindexLast != nullptr);
 
     const arith_uint256 powLimit = UintToArith256(params.powLimit);
+    const unsigned int powLimitCompact = powLimit.GetCompact();
+
     const int64_t T = params.nPowTargetSpacing;          // target spacing (37s for Bitrae)
     const int N     = std::max(params.nLWMAWindow, 10);  // safety floor
 
     // If chain is too short, return powLimit.
     if (pindexLast->nHeight < N) {
-        return powLimit.GetCompact();
+        return powLimitCompact;
     }
 
     // Accumulators
@@ -41,14 +47,13 @@ static unsigned int GetNextWorkRequired_LWMA(const CBlockIndex* pindexLast,
     int64_t sumWeightedSolveTimes = 0;
     const int64_t sumWeights = (int64_t)N * (N + 1) / 2; // N(N+1)/2
     arith_uint256 avgTarget = arith_uint256(); // zero-init
-    // or simply: arith_uint256 avgTarget; avgTarget = 0;
 
     const CBlockIndex* block = pindexLast;
 
     for (int i = 1; i <= N; ++i) {
         const CBlockIndex* prev = block->pprev;
         if (!prev) {
-            return powLimit.GetCompact();
+            return powLimitCompact;
         }
 
         // Solve time between consecutive blocks
@@ -74,7 +79,7 @@ static unsigned int GetNextWorkRequired_LWMA(const CBlockIndex* pindexLast,
     // Normalization for linear weights: k = T * sum_{i=1..N} i
     const int64_t k = T * sumWeights;
     if (k <= 0) {
-        return powLimit.GetCompact();
+        return powLimitCompact;
     }
 
     // nextTarget = avgTarget * (sumWeightedSolveTimes / k)
@@ -86,6 +91,28 @@ static unsigned int GetNextWorkRequired_LWMA(const CBlockIndex* pindexLast,
     arith_uint256 nextTarget = avgTarget;
     nextTarget *= (uint64_t)(num * SCALE);
     nextTarget /= (uint64_t)(k * SCALE);
+
+    // --- Bitrae safety clamp: limit per-block adjustment (prevents abrupt difficulty swings) ---
+    // Clamp nextTarget relative to last block's target.
+    // 4x means difficulty can at most quadruple (target /4) or quarter (target *4) in one block.
+    {
+        const int64_t MAX_ADJ = 4;
+
+        arith_uint256 lastTarget; lastTarget.SetCompact(pindexLast->nBits);
+
+        // minTarget = lastTarget / MAX_ADJ  (harder)
+        arith_uint256 minTarget = lastTarget / (uint64_t)MAX_ADJ;
+        if (minTarget == 0) minTarget = arith_uint256(1);
+
+        // maxTarget = lastTarget * MAX_ADJ  (easier)
+        arith_uint256 maxTarget = lastTarget * (uint64_t)MAX_ADJ;
+
+        // Also respect powLimit on the easy side
+        if (maxTarget > powLimit) maxTarget = powLimit;
+
+        if (nextTarget < minTarget) nextTarget = minTarget;
+        if (nextTarget > maxTarget) nextTarget = maxTarget;
+    }
 
     if (nextTarget > powLimit) nextTarget = powLimit;
 
@@ -130,6 +157,20 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 {
     assert(pindexLast != nullptr);
 
+    const unsigned int nProofOfWorkLimit = UintToArith256(params.powLimit).GetCompact();
+
+    // -----------------------------------------------------------
+    // Apply testnet/regtest "min-difficulty if blocks are late" rule even AFTER LWMA activates.
+    // This is intentionally gated by fPowAllowMinDifficultyBlocks (false on mainnet).
+    // -----------------------------------------------------------
+    if (params.fPowAllowMinDifficultyBlocks) {
+        // If the new block's timestamp is more than 2 * target spacing,
+        // allow mining of a min-difficulty block to unstick the chain.
+        if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing * 2) {
+            return nProofOfWorkLimit;
+        }
+    }
+
     // Choose activation height based on network.
     // Simple heuristic: testnet/regtest typically allow min-difficulty blocks.
     const bool isTestnetLike = params.fPowAllowMinDifficultyBlocks;
@@ -141,33 +182,31 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     }
 
     // Legacy path (pre-activation)
-    unsigned int nProofOfWorkLimit = UintToArith256(params.powLimit).GetCompact();
+    if (params.fPowNoRetargeting)
+        return pindexLast->nBits;
 
     // Only change once per difficulty adjustment interval
-    if ((pindexLast->nHeight+1) % params.DifficultyAdjustmentInterval() != 0)
+    if ((pindexLast->nHeight + 1) % params.DifficultyAdjustmentInterval() != 0)
     {
         if (params.fPowAllowMinDifficultyBlocks)
         {
-            // Special difficulty rule for testnet:
-            // If the new block's timestamp is more than 2 * target spacing,
-            // allow mining of a min-difficulty block.
-            if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2)
-                return nProofOfWorkLimit;
-            else
+            // (Delay case handled above already, but keep the classic behavior here)
+            // Return the last non-special-min-difficulty-rules block
+            const CBlockIndex* pindex = pindexLast;
+            while (pindex->pprev &&
+                   pindex->nHeight % params.DifficultyAdjustmentInterval() != 0 &&
+                   pindex->nBits == nProofOfWorkLimit)
             {
-                // Return the last non-special-min-difficulty-rules block
-                const CBlockIndex* pindex = pindexLast;
-                while (pindex->pprev && pindex->nHeight % params.DifficultyAdjustmentInterval() != 0 && pindex->nBits == nProofOfWorkLimit)
-                    pindex = pindex->pprev;
-                return pindex->nBits;
+                pindex = pindex->pprev;
             }
+            return pindex->nBits;
         }
         return pindexLast->nBits;
     }
 
     // Go back by what we want to be a full period
-    int blockstogoback = params.DifficultyAdjustmentInterval()-1;
-    if ((pindexLast->nHeight+1) != params.DifficultyAdjustmentInterval())
+    int blockstogoback = params.DifficultyAdjustmentInterval() - 1;
+    if ((pindexLast->nHeight + 1) != params.DifficultyAdjustmentInterval())
         blockstogoback = params.DifficultyAdjustmentInterval();
 
     const CBlockIndex* pindexFirst = pindexLast;
