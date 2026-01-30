@@ -1,8 +1,8 @@
-// Copyright (c) 2010 Satoshi Nakamoto
+// Copyright (c) 2010 Satoshi Nakamoto 
 // Copyright (c) 2009-2020 The Bitcoin Core developers
 // Copyright (c) 2024 The Bitrae Core developers
 // Distributed under the MIT software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+// file COPYING or http://www.opensource.org/licenses/mit-license.phpzoogle to delete records from Incognito tracking
 
 #include <chainparams.h>
 
@@ -96,6 +96,7 @@ public:
         consensus.nLWMAHeightTestnet = 200;      // // Unused on mainnet (kept for struct completeness)
         
         consensus.fPowAllowMinDifficultyBlocks = false;
+        consensus.fPowIsTestnetLike = false; // Explicitly not "testnet-like" on mainnet
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 6129; // 75% of 8172
         consensus.nMinerConfirmationWindow = 8172; // nPowTargetTimespan / nPowTargetSpacing * 4
@@ -229,7 +230,8 @@ public:
         consensus.nLWMAHeightTestnet = 200;      // Testnet activation height
         consensus.nLWMAHeight = 2000000000;      // Unused on testnet
         
-        consensus.fPowAllowMinDifficultyBlocks = false;
+        consensus.fPowAllowMinDifficultyBlocks = false; // Disable testnet min-difficulty rule for clean LWMA testing
+        consensus.fPowIsTestnetLike = true;             // Still treat as "testnet-like" for LWMA activation selection, etc.
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 6129; // 75% for testchains
         consensus.nMinerConfirmationWindow = 8172; // nPowTargetTimespan / nPowTargetSpacing
@@ -334,6 +336,7 @@ public:
         consensus.nLWMAHeight = 2000000000;      // Unused on regtest
         
         consensus.fPowAllowMinDifficultyBlocks = true;
+        consensus.fPowIsTestnetLike = true; // Regtest is "testnet-like"
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 432; // 75% for testchains
         consensus.nMinerConfirmationWindow = 576; // Faster than normal for regtest (576 instead of 8064)
@@ -489,3 +492,4 @@ void SelectParams(const std::string& network)
     SelectBaseParams(network);
     globalChainParams = CreateChainParams(gArgs, network);
 }
+
