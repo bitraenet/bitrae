@@ -88,7 +88,7 @@ public:
         consensus.nPowTargetTimespan = 21 * 60 * 60; // 21 Hours (75600 seconds)
         consensus.nPowTargetSpacing  = 37;           // Bitrae: 37 Seconds
         
-        // Deployment of LWMA v3 DAA
+        // Deployment of LWMA v3 DAA (BRIP-0001)
         // Window size and activation heights.
         // On MAINNET we use nLWMAHeight; nLWMAHeightTestnet is ignored here.
         consensus.nLWMAWindow = 90;
