@@ -229,7 +229,7 @@ public:
         consensus.nLWMAHeightTestnet = 200;      // Testnet activation height
         consensus.nLWMAHeight = 2000000000;      // Unused on testnet
         
-        consensus.fPowAllowMinDifficultyBlocks = true;
+        consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 6129; // 75% for testchains
         consensus.nMinerConfirmationWindow = 8172; // nPowTargetTimespan / nPowTargetSpacing
