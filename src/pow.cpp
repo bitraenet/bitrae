@@ -22,7 +22,7 @@
 // - Based on Zawy’s LWMA v3 notes: https://github.com/zawy12/difficulty-algorithms
 //
 // Bitrae additions:
-// - Per-block adjustment clamp (default 4x) to prevent abrupt difficulty swings (all networks)
+// - Per-block adjustment clamp (consensus param: nLWMAMaxAdjustFactor) to prevent abrupt swings
 // - Preserve testnet/regtest min-difficulty "late block" rule even after LWMA activates
 // ---------------------------------------------------------------
 static unsigned int GetNextWorkRequired_LWMA(const CBlockIndex* pindexLast,
@@ -94,24 +94,28 @@ static unsigned int GetNextWorkRequired_LWMA(const CBlockIndex* pindexLast,
 
     // --- Bitrae safety clamp: limit per-block adjustment (prevents abrupt difficulty swings) ---
     // Clamp nextTarget relative to last block's target.
-    // 4x means difficulty can at most quadruple (target /4) or quarter (target *4) in one block.
+    // The clamp factor is consensus-controlled via params.nLWMAMaxAdjustFactor:
+    //   - MAX_ADJ = 4 means difficulty can at most 4x harder (target/4) or 4x easier (target*4) in one block.
+    //   - MAX_ADJ <= 0 disables the clamp (useful for regtest/experiments; not recommended for production).
     {
-        const int64_t MAX_ADJ = 4;
+        const int64_t MAX_ADJ = params.nLWMAMaxAdjustFactor;
 
-        arith_uint256 lastTarget; lastTarget.SetCompact(pindexLast->nBits);
+        if (MAX_ADJ > 0) {
+            arith_uint256 lastTarget; lastTarget.SetCompact(pindexLast->nBits);
 
-        // minTarget = lastTarget / MAX_ADJ  (harder)
-        arith_uint256 minTarget = lastTarget / (uint64_t)MAX_ADJ;
-        if (minTarget == 0) minTarget = arith_uint256(1);
+            // minTarget = lastTarget / MAX_ADJ  (harder)
+            arith_uint256 minTarget = lastTarget / (uint64_t)MAX_ADJ;
+            if (minTarget == 0) minTarget = arith_uint256(1);
 
-        // maxTarget = lastTarget * MAX_ADJ  (easier)
-        arith_uint256 maxTarget = lastTarget * (uint64_t)MAX_ADJ;
+            // maxTarget = lastTarget * MAX_ADJ  (easier)
+            arith_uint256 maxTarget = lastTarget * (uint64_t)MAX_ADJ;
 
-        // Also respect powLimit on the easy side
-        if (maxTarget > powLimit) maxTarget = powLimit;
+            // Also respect powLimit on the easy side
+            if (maxTarget > powLimit) maxTarget = powLimit;
 
-        if (nextTarget < minTarget) nextTarget = minTarget;
-        if (nextTarget > maxTarget) nextTarget = maxTarget;
+            if (nextTarget < minTarget) nextTarget = minTarget;
+            if (nextTarget > maxTarget) nextTarget = maxTarget;
+        }
     }
 
     if (nextTarget > powLimit) nextTarget = powLimit;
