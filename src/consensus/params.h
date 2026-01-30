@@ -86,8 +86,16 @@ struct Params {
     BIP9Deployment vDeployments[MAX_VERSION_BITS_DEPLOYMENTS];
     /** Proof of work parameters */
     uint256 powLimit;
+
+    // Proof-of-work feature flags
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
+
+    // Decouple "testnet-like behaviour" from the min-difficulty rule flag.
+    // This prevents disabling min-difficulty from accidentally changing other code paths
+    // that need to behave differently on testnet/regtest.
+    bool fPowIsTestnetLike{false};
+
     int64_t nPowTargetSpacing;
     int64_t nPowTargetTimespan;
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
