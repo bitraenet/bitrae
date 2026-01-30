@@ -223,7 +223,7 @@ public:
         consensus.nPowTargetTimespan = 21 * 60 * 60; // 21 Hours (75600 seconds)
         consensus.nPowTargetSpacing  = 37;           // Bitrae: 37 Seconds
         
-        // Deployment of LWMA v3 DAA (activate quickly on testnet)
+        // Deployment of LWMA v3 DAA (BRIP-0001) (activate quickly on testnet)
         // TESTNET activates via nLWMAHeightTestnet; nLWMAHeight is unused on testnet.
         consensus.nLWMAWindow = 90;
         consensus.nLWMAHeightTestnet = 200;      // Testnet activation height
@@ -326,7 +326,7 @@ public:
         consensus.nPowTargetTimespan = 21 * 60 * 60; // 21 Hours (75600 seconds)
         consensus.nPowTargetSpacing  = 37;          // Bitrae: 37 Seconds
         
-        // Deployment of LWMA v3 DAA
+        // Deployment of LWMA v3 DAA (BRIP-0001)
         // REGTEST uses the "testnet-like" activation field (nLWMAHeightTestnet) for immediate testing.
         // Smaller window speeds up feedback during local tests.
         consensus.nLWMAWindow = 60;              // Faster window for rapid testing
