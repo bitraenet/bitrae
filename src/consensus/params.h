@@ -106,6 +106,13 @@ struct Params {
     int nLWMAHeight{std::numeric_limits<int>::max()};      // mainnet activation height (disabled by default)
     int nLWMAHeightTestnet{std::numeric_limits<int>::max()}; // testnet/regtest activation height (disabled by default)
 
+    // LWMA per-block adjustment clamp factor (consensus-critical once LWMA is active):
+    // - Value > 0: limits how much the target may change in a single block relative to the previous block.
+    //   Example: 4 means difficulty may at most 4x harder (target/4) or 4x easier (target*4) in one block.
+    // - Value <= 0: disables the clamp entirely (useful for regtest/experiments; not recommended for production).
+    // Default is conservative (4) to preserve prior behaviour unless overridden per-network in chainparams.cpp.
+    int64_t nLWMAMaxAdjustFactor{4};
+
     /** The best chain should have at least this much work */
     uint256 nMinimumChainWork;
     /** By default assume that the signatures in ancestors of this block are valid */
