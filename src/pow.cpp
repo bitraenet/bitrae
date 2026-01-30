@@ -171,9 +171,10 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         }
     }
 
-    // Choose activation height based on network.
-    // Simple heuristic: testnet/regtest typically allow min-difficulty blocks.
-    const bool isTestnetLike = params.fPowAllowMinDifficultyBlocks;
+    // Choose activation height based on network behavior (testnet-like vs mainnet-like).
+    // IMPORTANT: This must NOT depend on fPowAllowMinDifficultyBlocks, because you may want
+    // "testnet-like" activation heights while disabling the min-difficulty rule for clean LWMA tests.
+    const bool isTestnetLike = params.fPowIsTestnetLike;
     const int  lwmaHeight    = isTestnetLike ? params.nLWMAHeightTestnet : params.nLWMAHeight;
 
     // Switch to LWMA at activation
