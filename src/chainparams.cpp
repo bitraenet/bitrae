@@ -68,7 +68,7 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
  *    timestamp before)
  * + Contains no strange transactions
  */
- 
+
 class CMainParams : public CChainParams {
 public:
     CMainParams() {
@@ -87,14 +87,18 @@ public:
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 21 * 60 * 60; // 21 Hours (75600 seconds)
         consensus.nPowTargetSpacing  = 37;           // Bitrae: 37 Seconds
-        
+
         // Deployment of LWMA v3 DAA (BRIP-0001)
         // Window size and activation heights.
         // On MAINNET we use nLWMAHeight; nLWMAHeightTestnet is ignored here.
         consensus.nLWMAWindow = 90;
         consensus.nLWMAHeight = 2000000000;      // Mainnet: TBD
         consensus.nLWMAHeightTestnet = 200;      // // Unused on mainnet (kept for struct completeness)
-        
+
+        // LWMA per-block clamp factor (only applies once LWMA is activated on this network).
+        // Mainnet: keep conservative to avoid abrupt difficulty swings.
+        consensus.nLWMAMaxAdjustFactor = 4;
+
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowIsTestnetLike = false; // Explicitly not "testnet-like" on mainnet
         consensus.fPowNoRetargeting = false;
@@ -116,7 +120,7 @@ public:
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000000001c482b9f166ec90");
-        
+
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x9b867ea38530bb6a9275791b7f1c27b5f3156d7bc8a0f3546a845101ebb6c7fc"); // Block 550000
 
@@ -223,13 +227,17 @@ public:
         consensus.powLimit = uint256S("00000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 21 * 60 * 60; // 21 Hours (75600 seconds)
         consensus.nPowTargetSpacing  = 37;           // Bitrae: 37 Seconds
-        
+
         // Deployment of LWMA v3 DAA (BRIP-0001) (activate quickly on testnet)
         // TESTNET activates via nLWMAHeightTestnet; nLWMAHeight is unused on testnet.
         consensus.nLWMAWindow = 90;
         consensus.nLWMAHeightTestnet = 200;      // Testnet activation height
         consensus.nLWMAHeight = 2000000000;      // Unused on testnet
-        
+
+        // LWMA per-block clamp factor (only applies once LWMA is active on this network).
+        // Testnet: allow larger swings so testing does not appear as an artificial 4x "staircase".
+        consensus.nLWMAMaxAdjustFactor = 16;
+
         consensus.fPowAllowMinDifficultyBlocks = false; // Disable testnet min-difficulty rule for clean LWMA testing
         consensus.fPowIsTestnetLike = true;             // Still treat as "testnet-like" for LWMA activation selection, etc.
         consensus.fPowNoRetargeting = false;
@@ -296,9 +304,8 @@ public:
             }
         };
 
-
         chainTxData = ChainTxData{
-            // Data from RPC: getchaintxstats 
+            // Data from RPC: getchaintxstats
             /* nTime    */ 1712059140,
             /* nTxCount */ 0,
             /* dTxRate  */ 1.0,
@@ -327,14 +334,18 @@ public:
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.nPowTargetTimespan = 21 * 60 * 60; // 21 Hours (75600 seconds)
         consensus.nPowTargetSpacing  = 37;          // Bitrae: 37 Seconds
-        
+
         // Deployment of LWMA v3 DAA (BRIP-0001)
         // REGTEST uses the "testnet-like" activation field (nLWMAHeightTestnet) for immediate testing.
         // Smaller window speeds up feedback during local tests.
         consensus.nLWMAWindow = 60;              // Faster window for rapid testing
         consensus.nLWMAHeightTestnet = 1;        // Activate LWMA at height 1 on regtest
         consensus.nLWMAHeight = 2000000000;      // Unused on regtest
-        
+
+        // Regtest: disable clamp by default for rapid iteration and clearer algorithm behaviour.
+        // (Set to a positive factor if you want to model production-style safety limits during tests.)
+        consensus.nLWMAMaxAdjustFactor = 0;
+
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowIsTestnetLike = true; // Regtest is "testnet-like"
         consensus.fPowNoRetargeting = false;
