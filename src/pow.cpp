@@ -22,7 +22,8 @@
 // - Based on Zawy’s LWMA v3 notes: https://github.com/zawy12/difficulty-algorithms
 //
 // Bitrae additions:
-// - Per-block adjustment clamp (consensus param: nLWMAMaxAdjustFactor) to prevent abrupt swings
+// - Per-block adjustment clamp (consensus params) to prevent abrupt swings
+//   * Supports asymmetric clamp: separate limits for harder vs easier moves
 // - Preserve testnet/regtest min-difficulty "late block" rule even after LWMA activates
 // ---------------------------------------------------------------
 static unsigned int GetNextWorkRequired_LWMA(const CBlockIndex* pindexLast,
@@ -93,25 +94,49 @@ static unsigned int GetNextWorkRequired_LWMA(const CBlockIndex* pindexLast,
     nextTarget /= (uint64_t)(k * SCALE);
 
     // --- Bitrae safety clamp: limit per-block adjustment (prevents abrupt difficulty swings) ---
-    // Clamp nextTarget relative to last block's target.
-    // The clamp factor is consensus-controlled via params.nLWMAMaxAdjustFactor:
-    //   - MAX_ADJ = 4 means difficulty can at most 4x harder (target/4) or 4x easier (target*4) in one block.
-    //   - MAX_ADJ <= 0 disables the clamp (useful for regtest/experiments; not recommended for production).
+    // Asymmetric clamp relative to last block's target:
+    //
+    //   - "Harder" direction: target decreases (difficulty increases)
+    //       minTarget = lastTarget / MAX_UP
+    //
+    //   - "Easier" direction: target increases (difficulty decreases)
+    //       maxTarget = lastTarget * MAX_DOWN
+    //
+    // Consensus params:
+    //   - nLWMAMaxAdjustUpFactor   : limits how fast difficulty can rise (target can shrink).
+    //   - nLWMAMaxAdjustDownFactor : limits how fast difficulty can fall (target can grow).
+    //
+    // Backward compatibility:
+    //   - If both asymmetric factors are <= 0, fall back to legacy symmetric nLWMAMaxAdjustFactor.
+    //   - Any factor <= 0 disables clamping in that direction.
     {
-        const int64_t MAX_ADJ = params.nLWMAMaxAdjustFactor;
+        int64_t maxUp   = params.nLWMAMaxAdjustUpFactor;
+        int64_t maxDown = params.nLWMAMaxAdjustDownFactor;
 
-        if (MAX_ADJ > 0) {
+        // Legacy fallback if new asymmetric params are not set
+        if (maxUp <= 0 && maxDown <= 0) {
+            const int64_t legacy = params.nLWMAMaxAdjustFactor;
+            maxUp = legacy;
+            maxDown = legacy;
+        }
+
+        // Only apply clamp if at least one direction is enabled
+        if (maxUp > 0 || maxDown > 0) {
             arith_uint256 lastTarget; lastTarget.SetCompact(pindexLast->nBits);
 
-            // minTarget = lastTarget / MAX_ADJ  (harder)
-            arith_uint256 minTarget = lastTarget / (uint64_t)MAX_ADJ;
-            if (minTarget == 0) minTarget = arith_uint256(1);
+            // Compute minTarget (harder clamp). If disabled, allow down to 1.
+            arith_uint256 minTarget = arith_uint256(1);
+            if (maxUp > 0) {
+                minTarget = lastTarget / (uint64_t)maxUp;
+                if (minTarget == 0) minTarget = arith_uint256(1);
+            }
 
-            // maxTarget = lastTarget * MAX_ADJ  (easier)
-            arith_uint256 maxTarget = lastTarget * (uint64_t)MAX_ADJ;
-
-            // Also respect powLimit on the easy side
-            if (maxTarget > powLimit) maxTarget = powLimit;
+            // Compute maxTarget (easier clamp). If disabled, allow up to powLimit.
+            arith_uint256 maxTarget = powLimit;
+            if (maxDown > 0) {
+                maxTarget = lastTarget * (uint64_t)maxDown;
+                if (maxTarget > powLimit) maxTarget = powLimit;
+            }
 
             if (nextTarget < minTarget) nextTarget = minTarget;
             if (nextTarget > maxTarget) nextTarget = maxTarget;
