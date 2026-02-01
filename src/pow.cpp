@@ -106,32 +106,23 @@ static unsigned int GetNextWorkRequired_LWMA(const CBlockIndex* pindexLast,
     //   - nLWMAMaxAdjustUpFactor   : limits how fast difficulty can rise (target can shrink).
     //   - nLWMAMaxAdjustDownFactor : limits how fast difficulty can fall (target can grow).
     //
-    // Backward compatibility:
-    //   - If both asymmetric factors are <= 0, fall back to legacy symmetric nLWMAMaxAdjustFactor.
-    //   - Any factor <= 0 disables clamping in that direction.
+    // Any factor <= 0 disables clamping in that direction.
     {
-        int64_t maxUp   = params.nLWMAMaxAdjustUpFactor;
-        int64_t maxDown = params.nLWMAMaxAdjustDownFactor;
-
-        // Legacy fallback if new asymmetric params are not set
-        if (maxUp <= 0 && maxDown <= 0) {
-            const int64_t legacy = params.nLWMAMaxAdjustFactor;
-            maxUp = legacy;
-            maxDown = legacy;
-        }
+        const int64_t maxUp   = params.nLWMAMaxAdjustUpFactor;
+        const int64_t maxDown = params.nLWMAMaxAdjustDownFactor;
 
         // Only apply clamp if at least one direction is enabled
         if (maxUp > 0 || maxDown > 0) {
             arith_uint256 lastTarget; lastTarget.SetCompact(pindexLast->nBits);
 
-            // Compute minTarget (harder clamp). If disabled, allow down to 1.
+            // Harder clamp (minTarget). If disabled, allow down to 1.
             arith_uint256 minTarget = arith_uint256(1);
             if (maxUp > 0) {
                 minTarget = lastTarget / (uint64_t)maxUp;
                 if (minTarget == 0) minTarget = arith_uint256(1);
             }
 
-            // Compute maxTarget (easier clamp). If disabled, allow up to powLimit.
+            // Easier clamp (maxTarget). If disabled, allow up to powLimit.
             arith_uint256 maxTarget = powLimit;
             if (maxDown > 0) {
                 maxTarget = lastTarget * (uint64_t)maxDown;
