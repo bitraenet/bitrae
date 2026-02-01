@@ -60,7 +60,8 @@ static unsigned int GetNextWorkRequired_LWMA(const CBlockIndex* pindexLast,
         // Solve time between consecutive blocks
         int64_t solvetime = block->GetBlockTime() - prev->GetBlockTime();
 
-        // Clamp to limit timestamp abuse. Allow some negative values to blunt manipulation.
+        // Clamp solvetime to limit timestamp manipulation.
+        // Bound extreme timestamps, then enforce a minimum solvetime of 1 second.
         if (solvetime >  6 * T) solvetime =  6 * T;
         if (solvetime < -6 * T) solvetime = -6 * T;
         if (solvetime < 1)      solvetime =  1;
