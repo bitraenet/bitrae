@@ -93,11 +93,13 @@ public:
         // On MAINNET we use nLWMAHeight; nLWMAHeightTestnet is ignored here.
         consensus.nLWMAWindow = 90;
         consensus.nLWMAHeight = 2000000000;      // Mainnet: TBD
-        consensus.nLWMAHeightTestnet = 200;      // // Unused on mainnet (kept for struct completeness)
+        consensus.nLWMAHeightTestnet = 200;      // // Unused on mainnet
 
-        // LWMA per-block clamp factor (only applies once LWMA is activated on this network).
-        // Mainnet: keep conservative to avoid abrupt difficulty swings.
-        consensus.nLWMAMaxAdjustFactor = 4;
+        // LWMA per-block asymmetric clamp factors (only apply once LWMA is activated on this network).
+        // Mainnet: keep hardening conservative (Up=4), but allow faster easing (Down=16)
+        // to reduce risk of chain stalls after abrupt hashrate loss.
+        consensus.nLWMAMaxAdjustUpFactor = 4;
+        consensus.nLWMAMaxAdjustDownFactor = 16;
 
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowIsTestnetLike = false; // Explicitly not "testnet-like" on mainnet
@@ -228,15 +230,17 @@ public:
         consensus.nPowTargetTimespan = 21 * 60 * 60; // 21 Hours (75600 seconds)
         consensus.nPowTargetSpacing  = 37;           // Bitrae: 37 Seconds
 
-        // Deployment of LWMA v3 DAA (BRIP-0001) (activate quickly on testnet)
+        // Deployment of LWMA v3 DAA (BRIP-0001)
         // TESTNET activates via nLWMAHeightTestnet; nLWMAHeight is unused on testnet.
         consensus.nLWMAWindow = 90;
         consensus.nLWMAHeightTestnet = 200;      // Testnet activation height
         consensus.nLWMAHeight = 2000000000;      // Unused on testnet
 
-        // LWMA per-block clamp factor (only applies once LWMA is active on this network).
-        // Testnet: allow larger swings so testing does not appear as an artificial 4x "staircase".
-        consensus.nLWMAMaxAdjustFactor = 16;
+        // LWMA per-block asymmetric clamp factors (only apply once LWMA is active on this network).
+        // Testnet: mirror mainnet settings for a truer LWMA test, while still allowing faster easing
+        // after abrupt hashrate drops to avoid stalls.
+        consensus.nLWMAMaxAdjustUpFactor = 4;
+        consensus.nLWMAMaxAdjustDownFactor = 16;
 
         consensus.fPowAllowMinDifficultyBlocks = false; // Disable testnet min-difficulty rule for clean LWMA testing
         consensus.fPowIsTestnetLike = true;             // Still treat as "testnet-like" for LWMA activation selection, etc.
@@ -343,8 +347,9 @@ public:
         consensus.nLWMAHeight = 2000000000;      // Unused on regtest
 
         // Regtest: disable clamp by default for rapid iteration and clearer algorithm behaviour.
-        // (Set to a positive factor if you want to model production-style safety limits during tests.)
-        consensus.nLWMAMaxAdjustFactor = 0;
+        // (Set to positive factors if you want to model production-style safety limits during tests.)
+        consensus.nLWMAMaxAdjustUpFactor = 0;
+        consensus.nLWMAMaxAdjustDownFactor = 0;
 
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowIsTestnetLike = true; // Regtest is "testnet-like"
