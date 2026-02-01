@@ -106,12 +106,24 @@ struct Params {
     int nLWMAHeight{std::numeric_limits<int>::max()};      // mainnet activation height (disabled by default)
     int nLWMAHeightTestnet{std::numeric_limits<int>::max()}; // testnet/regtest activation height (disabled by default)
 
-    // LWMA per-block adjustment clamp factor (consensus-critical once LWMA is active):
-    // - Value > 0: limits how much the target may change in a single block relative to the previous block.
-    //   Example: 4 means difficulty may at most 4x harder (target/4) or 4x easier (target*4) in one block.
-    // - Value <= 0: disables the clamp entirely (useful for regtest/experiments; not recommended for production).
-    // Default is conservative (4) to preserve prior behaviour unless overridden per-network in chainparams.cpp.
-    int64_t nLWMAMaxAdjustFactor{4};
+    // LWMA per-block adjustment clamp factors (consensus-critical once LWMA is active):
+    //
+    // Asymmetric clamping lets you prevent sudden difficulty spikes (hashrate surges),
+    // while still allowing the chain to recover quickly if hashrate disappears.
+    //
+    // - nLWMAMaxAdjustUpFactor:
+    //     Limits how quickly difficulty may INCREASE (target may DECREASE) in a single block.
+    //     Example: 4 means target can't drop below lastTarget/4 (difficulty can't jump >4x harder per block).
+    //
+    // - nLWMAMaxAdjustDownFactor:
+    //     Limits how quickly difficulty may DECREASE (target may INCREASE) in a single block.
+    //     Example: 16 means target can't rise above lastTarget*16 (difficulty can't drop >16x easier per block).
+    //
+    // - If BOTH factors <= 0: disables the clamp entirely (useful for regtest/experiments; not recommended for production).
+    //
+    // Defaults are conservative and symmetric to preserve current behaviour unless overridden per-network in chainparams.cpp.
+    int64_t nLWMAMaxAdjustUpFactor{4};
+    int64_t nLWMAMaxAdjustDownFactor{4};
 
     /** The best chain should have at least this much work */
     uint256 nMinimumChainWork;
